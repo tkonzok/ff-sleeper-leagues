@@ -13,5 +13,6 @@ import {NgIf} from "@angular/common";
 export class StarterComponent {
   protected teamLogoPaths: Record<string, string> = new TeamLogoMapper().getTeamLogoPaths();
   @Input() starter: SleeperPlayer | undefined;
-  @Input() opponent: boolean = false;
+  @Input() isOpponent: boolean = false;
+  @Input() points: string | null = null;
 }
