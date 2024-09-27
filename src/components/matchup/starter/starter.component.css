@@ -1,0 +1,14 @@
+div {
+  display: flex;
+  gap: 8px;
+  width: 240px;
+  height: 32px;
+  align-items: center;
+}
+
+img {
+  width: 32px;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}

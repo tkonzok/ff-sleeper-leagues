@@ -1,0 +1,4 @@
+<div>
+  <img *ngIf="starter" src="assets/logos/{{teamLogoPaths[starter.team]}}" alt="team logo" height="24px">
+  <span class="{{opponent ? 'red' : 'green'}}">{{ starter ? starter.first_name + " " + starter.last_name : "--" }}</span>
+</div>
