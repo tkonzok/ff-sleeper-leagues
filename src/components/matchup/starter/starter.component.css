@@ -1,9 +1,14 @@
 div {
   display: flex;
   gap: 8px;
-  width: 240px;
+  width: 276px;
   height: 32px;
+  padding: 4px 8px;
   align-items: center;
+  background: #3f3f3f;
+  border-radius: 4px;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 img {

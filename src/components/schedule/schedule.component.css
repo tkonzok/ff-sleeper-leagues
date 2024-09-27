@@ -4,7 +4,6 @@ div {
 
 button {
   padding: 2px 4px;
-  font-size: 16px;
   color: #fff;
   font-weight: bold;
   background-color: #444;
@@ -12,6 +11,8 @@ button {
   justify-content: space-around;
   align-items: center;
   height: 42px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .selected {
