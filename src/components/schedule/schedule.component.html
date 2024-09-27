@@ -1,14 +1,25 @@
 <div class="flex column">
   <div class="flex column" *ngFor="let dateGroup of filteredScheduleMapByDate">
-    <button
-      *ngFor="let game of dateGroup[1]"
-      (click)="onSelectGame(game)"
-      [ngClass]="{'selected': selectedGame === game}"
-    >
-      <img src="assets/logos/{{teamLogoPaths[game.guestTeam]}}" alt="guest team logo" height="24px">
-      <img src="assets/logos/{{teamLogoPaths[game.homeTeam]}}" alt="home team logo" height="24px">
+    <div class="buttons-wrapper" *ngFor="let game of dateGroup[1]">
+      <button class="game-viewed" (click)="onSelectGameViewed(game)" [ngClass]="{ selected: viewedGames.includes(game) }">
+        <img *ngIf="viewedGames.includes(game)" src="assets/icons/view.png" alt="open eye icon" />
+        <img *ngIf="!viewedGames.includes(game)" src="assets/icons/hide.png" alt="closed eye icon" />
+      </button>
+      <button class="select-game" (click)="onSelectGame(game)" [ngClass]="{ selected: selectedGame === game }">
+        <img src="assets/logos/{{ teamLogoPaths[game.guestTeam] }}" alt="guest team logo" height="24px" />
+        <img src="assets/logos/{{ teamLogoPaths[game.homeTeam] }}" alt="home team logo" height="24px" />
+      </button>
+    </div>
+    <span></span>
+    <span></span>
+  </div>
+  <span>Show Points:</span>
+  <div class="buttons-wrapper">
+    <button class="game-viewed" (click)="onSelectAllGamesViewed(false)" [ngClass]="{ selected: false }">
+      <img src="assets/icons/hide.png" alt="closed eye icon" />
     </button>
-    <span></span>
-    <span></span>
+    <button class="game-viewed" (click)="onSelectAllGamesViewed(true)" [ngClass]="{ selected: true }">
+      <img src="assets/icons/view.png" alt="open eye icon" />
+    </button>
   </div>
 </div>

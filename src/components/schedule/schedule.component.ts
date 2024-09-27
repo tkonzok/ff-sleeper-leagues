@@ -1,16 +1,14 @@
+import { NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { ScheduleService } from '../../domain/schedule.service';
-import { map, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { Schedule } from '../../domain/schedule';
-import {NgClass, NgForOf, NgOptimizedImage} from '@angular/common';
-import {TeamLogoMapper} from "../../utils/team-logo-mapper";
+import { ScheduleService } from '../../domain/schedule.service';
+import { TeamLogoMapper } from '../../utils/team-logo-mapper';
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [NgForOf, NgClass, NgOptimizedImage],
+  imports: [NgForOf, NgClass, NgOptimizedImage, NgIf],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })
@@ -20,6 +18,7 @@ export class ScheduleComponent implements OnInit {
   protected filteredScheduleMapByDate: [string, Schedule[]][] = [];
   protected teamLogoPaths: Record<string, string> = new TeamLogoMapper().getTeamLogoPaths();
   private _week?: number;
+  private _viewedGames: Schedule[] = [];
 
   @Input() set week(value: number) {
     this._week = value;
@@ -33,8 +32,16 @@ export class ScheduleComponent implements OnInit {
   }
 
   @Input() selectedGame?: Schedule;
+  @Input() set viewedGames(games: Schedule[]) {
+    this._viewedGames = games;
+  }
+  get viewedGames(): Schedule[] {
+    return this._viewedGames;
+  }
 
   @Output() selectGame: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  @Output() toggleGameViewed: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  @Output() toggleAllGamesViewed: EventEmitter<Schedule[]> = new EventEmitter<Schedule[]>();
 
   constructor(private scheduleService: ScheduleService) {}
 
@@ -54,6 +61,18 @@ export class ScheduleComponent implements OnInit {
 
   protected onSelectGame(game: Schedule) {
     this.selectGame.emit(game);
+  }
+
+  protected onSelectGameViewed(game: Schedule) {
+    this.toggleGameViewed.emit(game);
+  }
+
+  protected onSelectAllGamesViewed(visible: boolean) {
+    if (visible) {
+      this.toggleAllGamesViewed.emit(this.filteredSchedule);
+      return;
+    }
+    this.toggleAllGamesViewed.emit([]);
   }
 
   private filterSchedule() {

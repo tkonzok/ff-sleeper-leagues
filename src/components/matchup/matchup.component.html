@@ -6,20 +6,26 @@
         <app-starter
           [starter]="starter"
           [isOpponent]="false"
-          [points]="showPoints && myTeam?.starters_points?.length ? myTeam!.starters_points[index].toString() : null"
+          [points]="
+            starter?.team && teamsWithShownPoints.includes(starter!.team) && myTeam?.starters_points?.length
+              ? myTeam!.starters_points[index].toString()
+              : null
+          "
         ></app-starter>
       </span>
-      <span class="points" *ngIf="showPoints && !selectedGame">{{ myTeam?.points }}</span>
     </div>
     <div class="flex column">
       <span class="player" *ngFor="let starter of opponent?.starters; let index = index">
         <app-starter
           [starter]="starter"
           [isOpponent]="true"
-          [points]="showPoints && opponent?.starters_points?.length ? opponent!.starters_points[index].toString() : null"
+          [points]="
+            starter?.team && teamsWithShownPoints.includes(starter!.team) && opponent?.starters_points?.length
+              ? opponent!.starters_points[index].toString()
+              : null
+          "
         ></app-starter>
       </span>
-      <span class="points" *ngIf="showPoints && !selectedGame">{{ opponent?.points }}</span>
     </div>
   </div>
 </div>

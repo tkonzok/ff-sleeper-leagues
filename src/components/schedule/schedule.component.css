@@ -15,6 +15,17 @@ button {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
+.buttons-wrapper {
+  display: flex;
+}
+
+.game-viewed {
+  min-width: 42px;
+}
+
+.select-game {
+}
+
 .selected {
   background: cadetblue;
 }

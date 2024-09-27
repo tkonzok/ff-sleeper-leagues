@@ -3,21 +3,18 @@
     <div class="content">
       <div class="flex column">
         <div class="week-selector" *ngIf="leagues.length">
-          <button (click)="decrementSelectedWeek()"><-</button>
+          <button (click)="decrementSelectedWeek()">< {{ selectedWeek > 1 ? selectedWeek - 1 : "" }}</button>
           <span>{{ selectedWeek }}</span>
-          <button (click)="incrementSelectedWeek()">-></button>
+          <button (click)="incrementSelectedWeek()">{{ selectedWeek < 18 ? selectedWeek + 1 : "" }} ></button>
         </div>
         <app-schedule
           [week]="selectedWeek"
           [selectedGame]="selectedGame"
+          [viewedGames]="viewedGames"
           (selectGame)="onSelectGame($event)"
+          (toggleGameViewed)="onToggleGameViewed($event)"
+          (toggleAllGamesViewed)="onToggleAllGamesViewed($event)"
         ></app-schedule>
-        <button
-          [ngClass]="showPoints ? 'hide-points' : 'show-points'"
-          (click)="toggleShowPoints()"
-        >
-          {{ showPoints ? "Hide Points" : "Show Points" }}
-        </button>
       </div>
       <div class="matchup-container flex column">
         <app-matchup
@@ -26,7 +23,7 @@
           [rosterId]="rosterIds.get(league.league_id)"
           [week]="selectedWeek"
           [selectedGame]="selectedGame"
-          [showPoints]="showPoints"
+          [viewedGames]="viewedGames"
         ></app-matchup>
       </div>
     </div>

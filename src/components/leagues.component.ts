@@ -22,7 +22,7 @@ export class LeaguesComponent implements OnInit {
   protected rosterIds: Map<string, number | null> = new Map<string, number | null>();
   protected selectedWeek: number = 1;
   protected selectedGame?: Schedule;
-  protected showPoints: boolean = false;
+  protected viewedGames: Schedule[] = [];
   private readonly USER_ID: string = '855945059361755136';
 
   constructor(private sleeperService: SleeperService) {}
@@ -54,6 +54,7 @@ export class LeaguesComponent implements OnInit {
     if (this.selectedWeek === 1) {
       return;
     }
+    this.onToggleAllGamesViewed([]);
     this.selectedWeek -= 1;
     this.selectedGame = undefined;
   }
@@ -62,6 +63,7 @@ export class LeaguesComponent implements OnInit {
     if (this.selectedWeek === 17) {
       return;
     }
+    this.onToggleAllGamesViewed([]);
     this.selectedWeek += 1;
     this.selectedGame = undefined;
   }
@@ -69,13 +71,20 @@ export class LeaguesComponent implements OnInit {
   protected onSelectGame(game: Schedule) {
     if (this.selectedGame === game) {
       this.selectedGame = undefined;
-      this.showPoints = false;
       return;
     }
     this.selectedGame = game;
   }
 
-  protected toggleShowPoints() {
-    this.showPoints = !this.showPoints;
+  protected onToggleGameViewed(game: Schedule) {
+    if (this.viewedGames.includes(game)) {
+      this.viewedGames = this.viewedGames.filter((g) => g !== game);
+      return;
+    }
+    this.viewedGames = this.viewedGames.concat(game);
+  }
+
+  protected onToggleAllGamesViewed(games: Schedule[]) {
+    this.viewedGames = games;
   }
 }

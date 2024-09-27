@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class Matchup {
   @Expose()
@@ -14,8 +14,10 @@ export class Matchup {
   matchup_id!: number;
 
   @Expose()
+  @Transform(({ value }) => value.toFixed(2), { toClassOnly: true })
   points!: number;
 
   @Expose()
+  @Transform(({ value }) => value.map((num: number) => num.toFixed(2)), { toClassOnly: true })
   starters_points!: number[];
 }

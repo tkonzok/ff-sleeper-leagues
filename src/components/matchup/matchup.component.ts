@@ -1,13 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { League } from '../../domain/league';
-import { MatchupRoster } from '../../domain/matchup-roster';
-import { SleeperService } from '../../domain/sleeper.service';
-import { map, tap } from 'rxjs';
 import { NgForOf, NgIf } from '@angular/common';
-import { SleeperPlayer } from '../../domain/sleeper-player';
-import { Schedule } from '../../domain/schedule';
+import { Component, Input, OnInit } from '@angular/core';
+import { map, tap } from 'rxjs';
+import { League } from '../../domain/league';
 import { Matchup } from '../../domain/matchup';
-import {StarterComponent} from "./starter/starter.component";
+import { MatchupRoster } from '../../domain/matchup-roster';
+import { Schedule } from '../../domain/schedule';
+import { SleeperPlayer } from '../../domain/sleeper-player';
+import { SleeperService } from '../../domain/sleeper.service';
+import { StarterComponent } from './starter/starter.component';
 
 @Component({
   selector: 'app-matchup',
@@ -20,12 +20,13 @@ export class MatchupComponent implements OnInit {
   protected allSleeperPlayers: SleeperPlayer[] = [];
   protected myTeam?: MatchupRoster;
   protected opponent?: MatchupRoster;
+  protected teamsWithShownPoints: string[] = [];
 
   private _league!: League;
   private _rosterId: number | null | undefined;
   private _week: number = 1;
   private _selectedGame?: Schedule;
-  private _showPoints: boolean = false;
+  private _viewedGames: Schedule[] = [];
 
   @Input({ required: true })
   set league(value: League) {
@@ -64,11 +65,12 @@ export class MatchupComponent implements OnInit {
   }
 
   @Input()
-  set showPoints(showPoints: boolean) {
-    this._showPoints = showPoints;
+  set viewedGames(games: Schedule[]) {
+    this._viewedGames = games;
+    this.updateTeamsWithShownPoints();
   }
-  get showPoints(): boolean {
-    return this._showPoints;
+  get viewedGames(): Schedule[] {
+    return this._viewedGames;
   }
 
   constructor(private sleeperService: SleeperService) {}
@@ -140,5 +142,17 @@ export class MatchupComponent implements OnInit {
         }
         return [this.selectedGame?.guestTeam, this.selectedGame?.homeTeam].includes(player.team);
       });
+  }
+
+  private updateTeamsWithShownPoints() {
+    this.teamsWithShownPoints = this.viewedGames.reduce((acc: string[], game: Schedule) => {
+      if (game.guestTeam) {
+        acc.push(game.guestTeam);
+      }
+      if (game.homeTeam) {
+        acc.push(game.homeTeam);
+      }
+      return acc;
+    }, []);
   }
 }
