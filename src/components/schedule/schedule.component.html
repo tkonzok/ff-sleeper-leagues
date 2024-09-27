@@ -1,13 +1,14 @@
 <div class="flex column">
-<!--  <button *ngFor="let game of filteredSchedule" (click)="onSelectGame(game)">{{game.guestTeam}} at {{game.homeTeam}}</button>-->
   <div class="flex column" *ngFor="let dateGroup of filteredScheduleMapByDate">
     <button
       *ngFor="let game of dateGroup[1]"
       (click)="onSelectGame(game)"
       [ngClass]="{'selected': selectedGame === game}"
     >
-      {{ game.guestTeam }} at {{ game.homeTeam }}
+      <img src="assets/logos/{{teamLogoPaths[game.guestTeam]}}" alt="guest team logo" height="24px">
+      <img src="assets/logos/{{teamLogoPaths[game.homeTeam]}}" alt="home team logo" height="24px">
     </button>
+    <span></span>
     <span></span>
   </div>
 </div>

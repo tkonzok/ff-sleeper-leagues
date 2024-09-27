@@ -4,12 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { ScheduleService } from '../../domain/schedule.service';
 import { map, tap } from 'rxjs';
 import { Schedule } from '../../domain/schedule';
-import { NgClass, NgForOf } from '@angular/common';
+import {NgClass, NgForOf, NgOptimizedImage} from '@angular/common';
+import {TeamLogoMapper} from "../../utils/team-logo-mapper";
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [NgForOf, NgClass],
+  imports: [NgForOf, NgClass, NgOptimizedImage],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })
@@ -17,6 +18,7 @@ export class ScheduleComponent implements OnInit {
   protected fullSchedule: Schedule[] = [];
   protected filteredSchedule: Schedule[] = [];
   protected filteredScheduleMapByDate: [string, Schedule[]][] = [];
+  protected teamLogoPaths: Record<string, string> = new TeamLogoMapper().getTeamLogoPaths();
   private _week?: number;
 
   @Input() set week(value: number) {
@@ -55,15 +57,11 @@ export class ScheduleComponent implements OnInit {
   }
 
   private filterSchedule() {
-    this.filteredSchedule = this.fullSchedule.filter(
-      (game) => game.week === this.week,
-    );
+    this.filteredSchedule = this.fullSchedule.filter((game) => game.week === this.week);
   }
 
   private sortSchedule() {
-    this.filteredSchedule = this.filteredSchedule.sort((a, b) =>
-      a.date.localeCompare(b.date),
-    );
+    this.filteredSchedule = this.filteredSchedule.sort((a, b) => a.date.localeCompare(b.date));
   }
 
   private mapScheduleDates() {
