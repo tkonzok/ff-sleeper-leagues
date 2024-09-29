@@ -1,4 +1,4 @@
-import { NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { League } from '../../domain/league';
@@ -12,7 +12,7 @@ import { StarterComponent } from './starter/starter.component';
 @Component({
   selector: 'app-matchup',
   standalone: true,
-  imports: [NgForOf, NgIf, StarterComponent],
+  imports: [NgForOf, NgIf, StarterComponent, NgClass],
   templateUrl: './matchup.component.html',
   styleUrls: ['./matchup.component.css'],
 })
@@ -21,6 +21,9 @@ export class MatchupComponent implements OnInit {
   protected myTeam?: MatchupRoster;
   protected opponent?: MatchupRoster;
   protected teamsWithShownPoints: string[] = [];
+  protected myTotalPoints: string = '';
+  protected opponentTotalPoints: string = '';
+  protected pointDifferential: string = '';
 
   private _league!: League;
   private _rosterId: number | null | undefined;
@@ -68,6 +71,7 @@ export class MatchupComponent implements OnInit {
   set viewedGames(games: Schedule[]) {
     this._viewedGames = games;
     this.updateTeamsWithShownPoints();
+    this.updateTotalPoints();
   }
   get viewedGames(): Schedule[] {
     return this._viewedGames;
@@ -112,15 +116,16 @@ export class MatchupComponent implements OnInit {
             starters: myFilteredStarters.map((item) => item.player),
             roster_id: myMatchup.roster_id,
             points: myMatchup.points,
-            starters_points: myFilteredStarters.map((item) => myMatchup.starters_points[item.index]),
+            starters_points: myFilteredStarters.map((item) => myMatchup?.starters_points[item.index] || '0.00'),
           };
 
           this.opponent = {
             starters: opponentFilteredStarters.map((item) => item.player),
             roster_id: opponentsMatchup.roster_id,
             points: opponentsMatchup.points,
-            starters_points: opponentFilteredStarters.map((item) => opponentsMatchup.starters_points[item.index]),
+            starters_points: opponentFilteredStarters.map((item) => opponentsMatchup?.starters_points[item.index] || '0.00'),
           };
+          this.updateTotalPoints();
         }),
       )
       .subscribe();
@@ -154,5 +159,37 @@ export class MatchupComponent implements OnInit {
       }
       return acc;
     }, []);
+  }
+
+  private updateTotalPoints() {
+    if (!this.myTeam || !this.opponent) {
+      return;
+    }
+    this.myTotalPoints = this.getPointsOfViewedGames(this.myTeam);
+    this.opponentTotalPoints = this.getPointsOfViewedGames(this.opponent);
+    this.pointDifferential = this.getPointDifferential();
+  }
+
+  private getPointsOfViewedGames(roster: MatchupRoster): string {
+    if (!roster.starters) {
+      return '0.00';
+    }
+    const totalPointsArray: string[] = roster.starters.map((starter, index) => {
+      if (!starter) {
+        return '0.00';
+      }
+      if (!this.teamsWithShownPoints.includes(starter.team)) {
+        return '0.00';
+      }
+      return roster.starters_points[index];
+    });
+    return totalPointsArray.reduce((acc: number, cum: string) => acc + parseFloat(cum), 0).toFixed(2);
+  }
+
+  private getPointDifferential() {
+    const myPoints = parseFloat(this.myTotalPoints);
+    const opponentPoints = parseFloat(this.opponentTotalPoints);
+    const difference = myPoints - opponentPoints;
+    return difference > 0 ? `+${difference.toFixed(2)}` : difference.toFixed(2);
   }
 }

@@ -15,9 +15,9 @@ export class Matchup {
 
   @Expose()
   @Transform(({ value }) => value.toFixed(2), { toClassOnly: true })
-  points!: number;
+  points!: string;
 
   @Expose()
   @Transform(({ value }) => value.map((num: number) => num.toFixed(2)), { toClassOnly: true })
-  starters_points!: number[];
+  starters_points!: string[];
 }

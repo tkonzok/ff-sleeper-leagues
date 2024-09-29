@@ -1,5 +1,16 @@
 <div class="container">
-  <h2>{{ league.name }}</h2>
+  <div class="league-header">
+    <div>
+      <h2>{{ league.name }}</h2>
+    </div>
+    <div *ngIf="myTeam?.starters?.length || opponent?.starters?.length" class="flex total-points">
+      <h2>{{ myTotalPoints }}</h2>
+      <h2>{{ opponentTotalPoints }}</h2>
+      <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
+        ({{ pointDifferential }})
+      </h2>
+    </div>
+  </div>
   <div *ngIf="myTeam?.starters?.length || opponent?.starters?.length" class="content">
     <div class="flex column">
       <span *ngFor="let starter of myTeam?.starters; let index = index">

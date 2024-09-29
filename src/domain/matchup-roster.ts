@@ -9,8 +9,8 @@ export class MatchupRoster {
   roster_id!: number;
 
   @Expose()
-  points!: number;
+  points!: string;
 
   @Expose()
-  starters_points!: number[];
+  starters_points!: string[];
 }

@@ -15,11 +15,11 @@
   </div>
   <span>Show Points:</span>
   <div class="buttons-wrapper">
-    <button class="game-viewed" (click)="onSelectAllGamesViewed(false)" [ngClass]="{ selected: false }">
-      <img src="assets/icons/hide.png" alt="closed eye icon" />
-    </button>
     <button class="game-viewed" (click)="onSelectAllGamesViewed(true)" [ngClass]="{ selected: true }">
       <img src="assets/icons/view.png" alt="open eye icon" />
+    </button>
+    <button class="game-viewed" (click)="onSelectAllGamesViewed(false)" [ngClass]="{ selected: false }">
+      <img src="assets/icons/hide.png" alt="closed eye icon" />
     </button>
   </div>
 </div>
