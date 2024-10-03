@@ -1,5 +1,5 @@
 h2 {
-  font-size: clamp(14px, calc(14px + (20 - 14) * ((100vw - 580px) / (1000 - 580))), 20px);
+  font-size: clamp(11px, calc(11px + (20 - 11) * ((100vw - 370px) / (1000 - 370))), 20px);
 }
 
 .league-header {
@@ -8,6 +8,13 @@ h2 {
   justify-content: space-between;
   align-items: center;
   padding: 0 12px;
+}
+
+.league-header > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .content {

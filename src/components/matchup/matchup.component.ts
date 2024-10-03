@@ -24,6 +24,7 @@ export class MatchupComponent implements OnInit {
   protected myTotalPoints: string = '';
   protected opponentTotalPoints: string = '';
   protected pointDifferential: string = '';
+  protected initialized = false;
 
   private _league!: League;
   private _rosterId: number | null | undefined;
@@ -100,6 +101,7 @@ export class MatchupComponent implements OnInit {
       .getMatchups(this._league.league_id, this._week.toString())
       .pipe(
         tap((matchups) => {
+          let initialized = true;
           let myMatchup = matchups.find((matchup) => matchup.roster_id === this._rosterId);
           let opponentsMatchup = matchups.find(
             (matchup) => matchup.matchup_id === myMatchup?.matchup_id && matchup.roster_id !== this._rosterId,

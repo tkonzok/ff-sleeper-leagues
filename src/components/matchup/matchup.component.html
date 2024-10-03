@@ -3,7 +3,10 @@
     <div>
       <h2>{{ league.name }}</h2>
     </div>
-    <div *ngIf="(myTeam?.starters?.length || opponent?.starters?.length) && teamsWithShownPoints.length" class="flex total-points">
+    <div
+      *ngIf="(myTeam?.starters?.length || opponent?.starters?.length) && teamsWithShownPoints.length"
+      class="flex total-points"
+    >
       <h2>{{ myTotalPoints }}</h2>
       <h2>{{ opponentTotalPoints }}</h2>
       <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
@@ -11,7 +14,7 @@
       </h2>
     </div>
   </div>
-  <div *ngIf="!myTeam?.starters?.length && !opponent?.starters?.length" class="content">
+  <div *ngIf="!initialized" class="content">
     <p class="loading-message">loading ...</p>
   </div>
   <div *ngIf="myTeam?.starters?.length || opponent?.starters?.length" class="content">
