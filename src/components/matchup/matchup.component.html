@@ -14,9 +14,6 @@
       </h2>
     </div>
   </div>
-  <div *ngIf="!initialized" class="content">
-    <p class="loading-message">loading ...</p>
-  </div>
   <div *ngIf="myTeam?.starters?.length || opponent?.starters?.length" class="content">
     <div class="flex column">
       <span *ngFor="let starter of myTeam?.starters; let index = index">
