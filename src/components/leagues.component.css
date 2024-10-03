@@ -30,10 +30,6 @@ button {
   margin-bottom: 100px;
 }
 
-.content > div {
-  gap: 32px;
-}
-
 .header {
   grid-column: span 2;
   width: min(880px, 100vw);
