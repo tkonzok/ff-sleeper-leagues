@@ -1,5 +1,5 @@
 h2 {
-  font-size: clamp(16px, calc(16px + (20 - 16) * ((100vw - 580px) / (1000 - 580))), 20px);
+  font-size: clamp(14px, calc(14px + (20 - 14) * ((100vw - 580px) / (1000 - 580))), 20px);
 }
 
 .league-header {
