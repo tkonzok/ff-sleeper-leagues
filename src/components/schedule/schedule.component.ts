@@ -17,6 +17,8 @@ export class ScheduleComponent implements OnInit {
   protected filteredSchedule: Schedule[] = [];
   protected filteredScheduleMapByDate: [string, Schedule[]][] = [];
   protected teamLogoPaths: Record<string, string> = new TeamLogoMapper().getTeamLogoPaths();
+  protected initialized: boolean = false;
+
   private _week?: number;
   private _viewedGames: Schedule[] = [];
 
@@ -56,7 +58,9 @@ export class ScheduleComponent implements OnInit {
           this.mapScheduleDates();
         }),
       )
-      .subscribe();
+      .subscribe(() => {
+        this.initialized = true;
+      });
   }
 
   protected onSelectGame(game: Schedule) {

@@ -1,14 +1,22 @@
-.content {
+h2 {
+  font-size: clamp(16px, calc(16px + (20 - 16) * ((100vw - 580px) / (1000 - 580))), 20px);
+}
+
+.league-header {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
 }
 
 .content div {
-  width: 324px;
-}
-
-.player {
-  display: flex;
-  gap: 8px;
+  margin: 4px;
 }
 
 .green {
@@ -23,14 +31,6 @@
   font-weight: bold;
 }
 
-.league-header {
-  width: 600px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 12px;
-}
-
 .total-points {
   color: darkgrey;
 }
@@ -41,4 +41,19 @@
 
 .red {
   color: darksalmon;
+}
+
+.loading-message {
+  margin-left: 32px;
+}
+
+@media (max-width: 576px) {
+  h2 {
+    margin: 0 0 8px;
+  }
+
+  .league-header {
+    flex-direction: column;
+    align-items: start;
+  }
 }

@@ -1,4 +1,4 @@
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -13,7 +13,17 @@ import { ScheduleComponent } from './schedule/schedule.component';
 @Component({
   selector: 'app-leagues',
   standalone: true,
-  imports: [NgForOf, NgIf, ReactiveFormsModule, RouterLink, RosterComponent, MatchupComponent, ScheduleComponent, NgClass],
+  imports: [
+    NgForOf,
+    NgIf,
+    ReactiveFormsModule,
+    RouterLink,
+    RosterComponent,
+    MatchupComponent,
+    ScheduleComponent,
+    NgClass,
+    AsyncPipe,
+  ],
   templateUrl: './leagues.component.html',
   styleUrls: ['./leagues.component.css'],
 })
@@ -23,14 +33,15 @@ export class LeaguesComponent implements OnInit {
   protected selectedWeek: number = 1;
   protected selectedGame?: Schedule;
   protected viewedGames: Schedule[] = [];
+  protected initialized: boolean = false;
+
   private readonly USER_ID: string = '855945059361755136';
 
   constructor(private sleeperService: SleeperService) {}
 
   ngOnInit() {
-    this.sleeperService
-      .getLeagues(this.USER_ID)
-      .pipe(
+    forkJoin({
+      leagues: this.sleeperService.getLeagues(this.USER_ID).pipe(
         switchMap((leagues) => {
           const leagueObservables = leagues.map((league: League) =>
             this.sleeperService.getRosterId(league.league_id, this.USER_ID).pipe(
@@ -45,9 +56,12 @@ export class LeaguesComponent implements OnInit {
         tap((leagues: League[]) => {
           this.leagues = leagues;
         }),
-      )
-      .subscribe();
-    this.sleeperService.getWeek().subscribe((week) => (this.selectedWeek = week));
+      ),
+      week: this.sleeperService.getWeek(),
+    }).subscribe(({ leagues, week }) => {
+      this.selectedWeek = week;
+      this.initialized = true;
+    });
   }
 
   protected decrementSelectedWeek() {
@@ -87,4 +101,6 @@ export class LeaguesComponent implements OnInit {
   protected onToggleAllGamesViewed(games: Schedule[]) {
     this.viewedGames = games;
   }
+
+  protected readonly location = location;
 }

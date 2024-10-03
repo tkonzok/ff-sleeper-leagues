@@ -1,18 +1,18 @@
 div {
   display: flex;
   gap: 8px;
-  width: 282px;
-  height: 32px;
+  width: 100%;
+  height: 36px;
   padding: 4px 8px;
   align-items: center;
   background: #3f3f3f;
   border-radius: 4px;
-  font-size: 18px;
+  font-size: clamp(13px, calc(13px + (18 - 13) * ((100vw - 580px) / (1000 - 580))), 18px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 img {
-  width: 32px;
+  width: clamp(24px, calc(24px + (32 - 24) * ((100vw - 580px) / (720 - 580))), 32px);
   height: 100%;
   object-fit: contain;
   object-position: center;
@@ -20,6 +20,20 @@ img {
 
 .points {
   margin-left: auto;
-  width: 48px;
+  width: fit-content;
   color: darkgrey;
+}
+
+@media (max-width: 720px) {
+  div {
+    min-height: 40px;
+  }
+
+  /*img {*/
+  /*  width: 24px;*/
+  /*}*/
+
+  .points {
+    width: fit-content;
+  }
 }

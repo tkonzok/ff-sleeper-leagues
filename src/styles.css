@@ -13,6 +13,10 @@ html {
   background: #3f3f3f;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   overflow: hidden;
   height: 100%;
@@ -33,6 +37,14 @@ body {
 
 .mt-16 {
   margin-top: 16px;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
 }
 
 .roboto-thin {

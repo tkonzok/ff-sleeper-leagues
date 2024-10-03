@@ -11,16 +11,6 @@ button {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-span {
-  padding: 8px;
-  font-size: 16px;
-  color: #600;
-  font-weight: bold;
-  background-color: #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
 .container {
   flex-direction: column;
   justify-content: start;
@@ -29,27 +19,27 @@ span {
   display: flex;
   flex-wrap: nowrap;
   gap: 20px;
-  padding: 16px;
-  height: calc(100vh - 32px);
-  width: 100%;
+  height: 100vh;
+  width: calc(100vw + 18px); /*hide scrollbar*/
   overflow-y: scroll;
 }
 
-.container > div {
-  width: fit-content;
+.content {
+  display: grid;
+  grid-template-columns: 150px calc(min(880px, 100vw) - 150px);
+  width: min(880px, 100vw);
   justify-content: center;
   margin-bottom: 100px;
 }
 
-.content {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-around;
-  gap: 24px;
-}
-
 .content > div {
   gap: 32px;
+}
+
+.header {
+  grid-column: span 2;
+  width: min(880px, 100vw);
+  padding: 16px;
 }
 
 .show-points {
@@ -66,25 +56,35 @@ span {
   align-items: center;
 }
 
-.matchup-container {
-  margin-top: 72px;
+.week-selector > button,
+.header > button {
+  padding: 8px;
+  background-color: #ddd;
 }
 
-@media (max-width: 1240px) {
-  .container {
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    margin: 0 auto;
-  }
-
-  .mt-16 {
-    margin-top: 0;
-  }
+.week-selector > span {
+  width: 32px;
+  text-align: center;
+  padding: 8px;
+  font-size: 18px;
+  color: #600;
+  font-weight: bold;
+  background-color: #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 720px) {
-  .container {
-    padding: 64px 16px 16px;
+.mirrored-hor {
+  transform: scaleX(-1);
+}
+
+.matchup-container,
+.schedule-container {
+  padding: 8px;
+}
+
+@media (max-width: 580px) {
+  .matchup-container {
+    padding: 0 8px 0 0;
   }
 }

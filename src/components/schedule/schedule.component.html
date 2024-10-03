@@ -1,4 +1,4 @@
-<div class="flex column">
+<div *ngIf="initialized" class="flex column">
   <div class="flex column" *ngFor="let dateGroup of filteredScheduleMapByDate">
     <div class="buttons-wrapper" *ngFor="let game of dateGroup[1]">
       <button class="game-viewed" (click)="onSelectGameViewed(game)" [ngClass]="{ selected: viewedGames.includes(game) }">

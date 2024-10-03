@@ -1,31 +1,38 @@
 <div class="container">
-  <div class="flex column mt-16">
-    <div class="content">
-      <div class="flex column">
-        <div class="week-selector" *ngIf="leagues.length">
-          <button (click)="decrementSelectedWeek()">< {{ selectedWeek > 1 ? selectedWeek - 1 : "" }}</button>
-          <span>{{ selectedWeek }}</span>
-          <button (click)="incrementSelectedWeek()">{{ selectedWeek < 18 ? selectedWeek + 1 : "" }} ></button>
-        </div>
-        <app-schedule
-          [week]="selectedWeek"
-          [selectedGame]="selectedGame"
-          [viewedGames]="viewedGames"
-          (selectGame)="onSelectGame($event)"
-          (toggleGameViewed)="onToggleGameViewed($event)"
-          (toggleAllGamesViewed)="onToggleAllGamesViewed($event)"
-        ></app-schedule>
+  <div *ngIf="initialized" class="content">
+    <div class="header flex space-between">
+      <div class="week-selector" *ngIf="leagues.length">
+        <button (click)="decrementSelectedWeek()">
+          <img src="assets/icons/arrow.png" alt="arrow" class="mirrored-hor" />
+        </button>
+        <span>{{ selectedWeek }}</span>
+        <button (click)="incrementSelectedWeek()">
+          <img src="assets/icons/arrow.png" alt="arrow" />
+        </button>
       </div>
-      <div class="matchup-container flex column">
-        <app-matchup
-          *ngFor="let league of leagues"
-          [league]="league"
-          [rosterId]="rosterIds.get(league.league_id)"
-          [week]="selectedWeek"
-          [selectedGame]="selectedGame"
-          [viewedGames]="viewedGames"
-        ></app-matchup>
-      </div>
+      <button (click)="location.reload()">
+        <img src="assets/icons/reload.png" alt="refresh" width="32px" height="32px" />
+      </button>
+    </div>
+    <div class="schedule-container flex column">
+      <app-schedule
+        [week]="selectedWeek"
+        [selectedGame]="selectedGame"
+        [viewedGames]="viewedGames"
+        (selectGame)="onSelectGame($event)"
+        (toggleGameViewed)="onToggleGameViewed($event)"
+        (toggleAllGamesViewed)="onToggleAllGamesViewed($event)"
+      ></app-schedule>
+    </div>
+    <div class="matchup-container flex column">
+      <app-matchup
+        *ngFor="let league of leagues"
+        [league]="league"
+        [rosterId]="rosterIds.get(league.league_id)"
+        [week]="selectedWeek"
+        [selectedGame]="selectedGame"
+        [viewedGames]="viewedGames"
+      ></app-matchup>
     </div>
   </div>
 </div>
