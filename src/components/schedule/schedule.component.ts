@@ -1,6 +1,6 @@
 import { NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { Schedule } from '../../domain/schedule';
 import { ScheduleService } from '../../domain/schedule.service';
 import { TeamLogoMapper } from '../../utils/team-logo-mapper';
@@ -48,19 +48,18 @@ export class ScheduleComponent implements OnInit {
   constructor(private scheduleService: ScheduleService) {}
 
   ngOnInit() {
+    this.getSchedule().subscribe(() => {
+      this.initialized = true;
+    });
+  }
+
+  protected updateSchedule() {
     this.scheduleService
-      .getSchedule()
+      .updateSchedule()
       .pipe(
-        tap((schedule: Schedule[]) => {
-          this.fullSchedule = schedule;
-          this.filterSchedule();
-          this.sortSchedule();
-          this.mapScheduleDates();
-        }),
+        switchMap(() => this.getSchedule()),
       )
-      .subscribe(() => {
-        this.initialized = true;
-      });
+      .subscribe();
   }
 
   protected onSelectGame(game: Schedule) {
@@ -77,6 +76,17 @@ export class ScheduleComponent implements OnInit {
       return;
     }
     this.toggleAllGamesViewed.emit([]);
+  }
+
+  private getSchedule() {
+    return this.scheduleService.getSchedule().pipe(
+      tap((schedule: Schedule[]) => {
+        this.fullSchedule = schedule;
+        this.filterSchedule();
+        this.sortSchedule();
+        this.mapScheduleDates();
+      }),
+    );
   }
 
   private filterSchedule() {

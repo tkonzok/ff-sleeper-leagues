@@ -11,6 +11,12 @@ button {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
+.update-button {
+  background-color: #ddd;
+  width: fit-content;
+  color: #000;
+}
+
 .container {
   flex-direction: column;
   justify-content: start;

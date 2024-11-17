@@ -2,7 +2,7 @@ import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { forkJoin, switchMap, tap } from 'rxjs';
+import {forkJoin, map, switchMap, tap} from 'rxjs';
 import { League } from '../domain/league';
 import { Schedule } from '../domain/schedule';
 import { SleeperService } from '../domain/sleeper.service';
@@ -28,6 +28,8 @@ import { ScheduleComponent } from './schedule/schedule.component';
   styleUrls: ['./leagues.component.css'],
 })
 export class LeaguesComponent implements OnInit {
+
+  protected readonly location = location;
   protected leagues: League[] = [];
   protected rosterIds: Map<string, number | null> = new Map<string, number | null>();
   protected selectedWeek: number = 1;
@@ -102,5 +104,9 @@ export class LeaguesComponent implements OnInit {
     this.viewedGames = games;
   }
 
-  protected readonly location = location;
+  protected updatePlayers() {
+    this.sleeperService.updateSleeperPlayers().pipe(
+      map(() => this.location.reload())
+    ).subscribe()
+  }
 }

@@ -28,6 +28,10 @@ export class SleeperService {
     );
   }
 
+  updateSleeperPlayers() {
+    return this.http.post(SleeperService.SLEEPER_PLAYERS_URL + "/update", {});
+  }
+
   getLeagues(userId: string) {
     return this.http
       .get<League[]>(`${SleeperService.SLEEPER_API_URL}/user/${userId}/leagues/nfl/2024`)

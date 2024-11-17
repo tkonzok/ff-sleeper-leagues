@@ -22,4 +22,8 @@ export class ScheduleService {
       ),
     );
   }
+
+  updateSchedule() {
+    return this.http.post(ScheduleService.SCHEDULE_URL + "/update", {})
+  }
 }

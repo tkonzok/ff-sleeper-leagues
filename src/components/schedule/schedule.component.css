@@ -36,3 +36,7 @@ img {
   object-fit: contain;
   object-position: center;
 }
+
+.update-button {
+  background-color: #ddd;
+}
