@@ -29,7 +29,7 @@ export class SleeperService {
   }
 
   updateSleeperPlayers() {
-    return this.http.post(SleeperService.SLEEPER_PLAYERS_URL + "/update", {});
+    return this.http.post(SleeperService.SLEEPER_PLAYERS_URL + '/update', {});
   }
 
   getLeagues(userId: string) {
