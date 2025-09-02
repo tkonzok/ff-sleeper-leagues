@@ -20,4 +20,7 @@ export class Matchup {
   @Expose()
   @Transform(({ value }) => value.map((num: number) => num.toFixed(2)), { toClassOnly: true })
   starters_points!: string[];
+
+  @Expose()
+  players_points!: Record<string, number>;
 }

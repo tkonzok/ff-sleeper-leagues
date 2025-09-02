@@ -1,4 +1,8 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+export class LeagueSettings {
+  @Expose() best_ball?: number;
+}
 
 export class League {
   @Expose() name!: string;
@@ -9,4 +13,8 @@ export class League {
   @Expose() league_id!: string;
   @Expose() roster_positions!: string[];
   @Expose() total_rosters!: number;
+
+  @Expose()
+  @Type(() => LeagueSettings)
+  settings!: LeagueSettings;
 }

@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
-import { AppGuard } from './app-resolver.service';
+import { AppComponent } from './app.component';
 
 export const routes: Routes = [
   {
     path: '',
-    canActivate: [AppGuard],
-    runGuardsAndResolvers: 'always',
+    component: AppComponent,
   },
   {
     path: '**',

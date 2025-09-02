@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { catchError, EMPTY, map, Observable, ReplaySubject, take } from 'rxjs';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { catchError, EMPTY, forkJoin, map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
+import { STORE_NAME_LAST_UPDATE } from '../app/indexed-db-config';
 import { ScheduleService } from './schedule.service';
 
 export enum MasterDataInitStatus {
@@ -13,30 +15,66 @@ export enum MasterDataInitStatus {
 })
 export class MasterDataService {
   private initStatus = new ReplaySubject<MasterDataInitStatus>(1);
+  private lastUpdated = new ReplaySubject<Date>(1);
 
-  constructor(private scheduleService: ScheduleService) {
-    this.init().subscribe();
-  }
+  constructor(
+    private scheduleService: ScheduleService,
+    private dbService: NgxIndexedDBService,
+  ) {}
 
   refresh() {
-    this.scheduleService.refreshAll().pipe(take(1)).subscribe();
+    forkJoin({
+      schedule: this.scheduleService.refreshAll().pipe(take(1)),
+    })
+      .pipe(
+        switchMap(() => this.dbService.clear(STORE_NAME_LAST_UPDATE)),
+        switchMap(() => this.dbService.add(STORE_NAME_LAST_UPDATE, new Date())),
+        tap(() => this.updateLastUpdateSubject()),
+      )
+      .subscribe();
   }
 
-  private init(): Observable<void> {
+  init() {
     this.initStatus.next(MasterDataInitStatus.IN_PROGRESS);
-    return this.scheduleService.init().pipe(
-      map(() => {
-        this.initStatus.next(MasterDataInitStatus.SUCCESS);
-      }),
-      catchError((e) => {
-        console.error(e);
-        this.initStatus.next(MasterDataInitStatus.FAILED);
-        return EMPTY;
-      }),
-    );
+    this.updateLastUpdateSubject();
+    forkJoin({
+      schedule: this.scheduleService.init(),
+    })
+      .pipe(
+        take(1),
+        map(() => {
+          this.initStatus.next(MasterDataInitStatus.SUCCESS);
+        }),
+        switchMap(() => this.dbService.clear(STORE_NAME_LAST_UPDATE)),
+        switchMap(() => this.dbService.add(STORE_NAME_LAST_UPDATE, { id: 'global', lastUpdate: new Date() })),
+        tap(() => this.updateLastUpdateSubject()),
+        map(() => undefined),
+        catchError((e) => {
+          console.error(e);
+          this.initStatus.next(MasterDataInitStatus.FAILED);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 
   get initStatus$(): Observable<MasterDataInitStatus> {
     return this.initStatus.asObservable();
+  }
+
+  get lastUpdated$(): Observable<Date> {
+    return this.lastUpdated.asObservable();
+  }
+
+  private updateLastUpdateSubject() {
+    this.dbService
+      .getAll<{ id: string; lastUpdate: Date }>(STORE_NAME_LAST_UPDATE)
+      .pipe(
+        take(1),
+        tap((lastUpdateStrings: { id: string; lastUpdate: Date }[]) => {
+          this.lastUpdated.next(lastUpdateStrings[0]?.lastUpdate);
+        }),
+      )
+      .subscribe();
   }
 }

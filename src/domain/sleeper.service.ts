@@ -34,7 +34,7 @@ export class SleeperService {
 
   getLeagues(userId: string) {
     return this.http
-      .get<League[]>(`${SleeperService.SLEEPER_API_URL}/user/${userId}/leagues/nfl/2024`)
+      .get<League[]>(`${SleeperService.SLEEPER_API_URL}/user/${userId}/leagues/nfl/2025`)
       .pipe(map((leagues) => plainToInstance(League, leagues, { excludeExtraneousValues: true })));
   }
 

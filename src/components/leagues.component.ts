@@ -1,29 +1,17 @@
-import { AsyncPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { League } from '../domain/league';
 import { Schedule } from '../domain/schedule';
 import { SleeperService } from '../domain/sleeper.service';
 import { MatchupComponent } from './matchup/matchup.component';
-import { RosterComponent } from './roster/roster.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 
 @Component({
   selector: 'app-leagues',
   standalone: true,
-  imports: [
-    NgForOf,
-    NgIf,
-    ReactiveFormsModule,
-    RouterLink,
-    RosterComponent,
-    MatchupComponent,
-    ScheduleComponent,
-    NgClass,
-    AsyncPipe,
-  ],
+  imports: [NgForOf, NgIf, ReactiveFormsModule, MatchupComponent, ScheduleComponent],
   templateUrl: './leagues.component.html',
   styleUrls: ['./leagues.component.css'],
 })
@@ -55,7 +43,7 @@ export class LeaguesComponent implements OnInit {
           return forkJoin(leagueObservables);
         }),
         tap((leagues: League[]) => {
-          this.leagues = leagues;
+          this.leagues = this.sortLeagues(leagues);
         }),
       ),
       week: this.sleeperService.getWeek(),
@@ -108,5 +96,18 @@ export class LeaguesComponent implements OnInit {
       .updateSleeperPlayers()
       .pipe(map(() => this.location.reload()))
       .subscribe();
+  }
+
+  private sortLeagues(leagues: League[]) {
+    return leagues.sort((a, b) => {
+      const order = (val?: number) => {
+        if (val === 0) return 0;
+        if (val === undefined) return 1;
+        if (val === 1) return 2;
+        return 3;
+      };
+
+      return order(a.settings.best_ball) - order(b.settings.best_ball);
+    });
   }
 }

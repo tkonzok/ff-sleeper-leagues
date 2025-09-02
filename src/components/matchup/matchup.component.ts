@@ -101,7 +101,6 @@ export class MatchupComponent implements OnInit {
       .getMatchups(this._league.league_id, this._week.toString())
       .pipe(
         tap((matchups) => {
-          let initialized = true;
           let myMatchup = matchups.find((matchup) => matchup.roster_id === this._rosterId);
           let opponentsMatchup = matchups.find(
             (matchup) => matchup.matchup_id === myMatchup?.matchup_id && matchup.roster_id !== this._rosterId,
@@ -134,7 +133,8 @@ export class MatchupComponent implements OnInit {
   }
 
   private filterStarters(matchup: Matchup) {
-    return matchup.starters
+    const starters = this.getStarters(matchup);
+    return starters
       .map((starter, index) => ({
         player: this.allSleeperPlayers.find((player) => player.player_id === starter),
         index: index,
@@ -149,6 +149,12 @@ export class MatchupComponent implements OnInit {
         }
         return [this.selectedGame?.guestTeam, this.selectedGame?.homeTeam].includes(player.team);
       });
+  }
+
+  private getStarters(matchup: Matchup) {
+    return this.league.settings.best_ball === 1
+      ? [...matchup.starters, ...matchup.players.filter((p) => !matchup.starters.includes(p))]
+      : matchup.starters;
   }
 
   private updateTeamsWithShownPoints() {
@@ -193,5 +199,50 @@ export class MatchupComponent implements OnInit {
     const opponentPoints = parseFloat(this.opponentTotalPoints);
     const difference = myPoints - opponentPoints;
     return difference > 0 ? `+${difference.toFixed(2)}` : difference.toFixed(2);
+  }
+
+  private buildBestBallLineup(league: League, matchup: Matchup, players: SleeperPlayer[]) {
+    // Map player_id → player
+    const playerMap: Record<string, SleeperPlayer> = {};
+    players.forEach((p) => {
+      playerMap[p.player_id] = p;
+    });
+
+    // Build list of {id, points, positions}
+    const playerPool = matchup.players
+      .map((pid) => ({
+        id: pid,
+        points: matchup.players_points[pid] ?? 0,
+        positions: playerMap[pid]?.fantasy_positions ?? [],
+      }))
+      .filter((p) => p.positions.length > 0);
+
+    // Sort by points desc
+    playerPool.sort((a, b) => b.points - a.points);
+
+    // Helper: check if player can fill a slot
+    const canFill = (slot: string, player: { positions: string[] }) => {
+      if (slot === 'FLEX') return player.positions.some((pos) => ['RB', 'WR', 'TE'].includes(pos));
+      if (slot === 'SUPER_FLEX') return player.positions.some((pos) => ['QB', 'RB', 'WR', 'TE'].includes(pos));
+      return player.positions.includes(slot); // strict match
+    };
+
+    const lineup: string[] = [];
+    const used = new Set<string>();
+
+    // Fill each roster slot in order
+    for (const slot of league.roster_positions) {
+      const candidate = playerPool.find((p) => !used.has(p.id) && canFill(slot, p));
+      if (candidate) {
+        lineup.push(candidate.id);
+        used.add(candidate.id);
+      } else {
+        lineup.push(null as any); // empty slot
+      }
+    }
+
+    const totalPoints = lineup.reduce((sum, pid) => sum + (matchup.players_points[pid] ?? 0), 0);
+
+    return { lineup, totalPoints };
   }
 }
