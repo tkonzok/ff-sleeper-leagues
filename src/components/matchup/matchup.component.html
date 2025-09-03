@@ -1,7 +1,9 @@
 <div class="container">
   <div class="league-header">
     <div>
-      <h2>{{ league.settings.best_ball === 1 ? league.name + " (Bestball)" : league.name }}</h2>
+      <h2 [ngClass]="{ bestball: league.settings.best_ball === 1 }">
+        {{ league.settings.best_ball === 1 ? league.name + " (Bestball)" : league.name }}
+      </h2>
     </div>
     <div
       *ngIf="(myTeam?.starters?.length || opponent?.starters?.length) && teamsWithShownPoints.length"

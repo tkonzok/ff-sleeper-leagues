@@ -82,7 +82,7 @@ export class MatchupComponent implements OnInit {
 
   ngOnInit(): void {
     this.sleeperService
-      .getSleeperPlayers()
+      .getSleeperPlayers$()
       .pipe(
         map((sleeperPlayers) => {
           this.allSleeperPlayers = sleeperPlayers;

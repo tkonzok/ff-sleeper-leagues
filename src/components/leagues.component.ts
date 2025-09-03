@@ -101,10 +101,7 @@ export class LeaguesComponent implements OnInit {
   private sortLeagues(leagues: League[]) {
     return leagues.sort((a, b) => {
       const order = (val?: number) => {
-        if (val === 0) return 0;
-        if (val === undefined) return 1;
-        if (val === 1) return 2;
-        return 3;
+        return val ? 1 : 0;
       };
 
       return order(a.settings.best_ball) - order(b.settings.best_ball);

@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToInstance } from 'class-transformer';
-import { map, Observable } from 'rxjs';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { map, Observable, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
+import { STORE_NAME_SLEEPER_PLAYERS } from '../app/indexed-db-config';
 import { environment } from '../environments/environment';
+import { ObservableInstanceMapper } from '../utils/observable-instance-mapper';
 import { League } from './league';
 import { Matchup } from './matchup';
 import { NflState } from './nfl-state';
@@ -15,17 +18,23 @@ import { SleeperPlayer } from './sleeper-player';
 export class SleeperService {
   private static readonly SLEEPER_PLAYERS_URL: string = `${environment.apiUrl}/sleeper-players`;
   private static readonly SLEEPER_API_URL: string = 'https://api.sleeper.app/v1';
+  private readonly sleeperPlayers$: ReplaySubject<SleeperPlayer[]> = new ReplaySubject(1);
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private dbService: NgxIndexedDBService,
+  ) {}
 
-  getSleeperPlayers(): Observable<SleeperPlayer[]> {
-    return this.http.get<SleeperPlayer[]>(SleeperService.SLEEPER_PLAYERS_URL).pipe(
-      map((sleeperPlayers) =>
-        plainToInstance(SleeperPlayer, sleeperPlayers, {
-          excludeExtraneousValues: true,
-        }),
-      ),
+  init(): Observable<void> {
+    return this.loadAll().pipe(
+      tap((sleeperPlayers) => this.sleeperPlayers$.next(sleeperPlayers)),
+      switchMap(() => this.refreshAll()),
+      map(() => undefined),
     );
+  }
+
+  getSleeperPlayers$(): Observable<SleeperPlayer[]> {
+    return this.sleeperPlayers$.asObservable();
   }
 
   updateSleeperPlayers() {
@@ -53,5 +62,49 @@ export class SleeperService {
 
   getWeek(): Observable<number> {
     return this.http.get<NflState>(`${SleeperService.SLEEPER_API_URL}/state/nfl`).pipe(map((state) => state.display_week));
+  }
+
+  refreshAll() {
+    return this.loadSleeperPlayersFromApi().pipe(
+      take(1),
+      tap((sleeperPlayers) => this.sleeperPlayers$.next(sleeperPlayers)),
+      switchMap((sleeperPlayers) =>
+        this.clearAll().pipe(
+          map(() => sleeperPlayers),
+          switchMap((schedule) => this.storeSleeperPlayersInDB(schedule)),
+        ),
+      ),
+    );
+  }
+
+  private loadAll(): Observable<SleeperPlayer[]> {
+    return this.dbService
+      .count(STORE_NAME_SLEEPER_PLAYERS)
+      .pipe(switchMap((count: number) => (count > 0 ? this.loadSleeperPlayersFromDB() : of([]))));
+  }
+
+  private loadSleeperPlayersFromApi(): Observable<SleeperPlayer[]> {
+    return this.http.get<SleeperPlayer[]>(SleeperService.SLEEPER_PLAYERS_URL).pipe(
+      map((sleeperPlayers: SleeperPlayer[]) =>
+        plainToInstance(SleeperPlayer, sleeperPlayers, {
+          excludeExtraneousValues: true,
+        }),
+      ),
+    );
+  }
+
+  private loadSleeperPlayersFromDB(): Observable<SleeperPlayer[]> {
+    return ObservableInstanceMapper.valuesToInstance(
+      this.dbService.getAll<SleeperPlayer>(STORE_NAME_SLEEPER_PLAYERS),
+      SleeperPlayer,
+    );
+  }
+
+  private storeSleeperPlayersInDB(sleeperPlayers: SleeperPlayer[]): Observable<number[]> {
+    return this.dbService.bulkAdd(STORE_NAME_SLEEPER_PLAYERS, sleeperPlayers);
+  }
+
+  private clearAll(): Observable<void> {
+    return this.dbService.clear(STORE_NAME_SLEEPER_PLAYERS);
   }
 }
