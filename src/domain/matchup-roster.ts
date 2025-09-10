@@ -12,5 +12,5 @@ export class MatchupRoster {
   points!: string;
 
   @Expose()
-  starters_points!: string[];
+  players_points!: string[];
 }

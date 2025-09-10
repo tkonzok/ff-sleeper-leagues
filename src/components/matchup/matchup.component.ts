@@ -110,21 +110,21 @@ export class MatchupComponent implements OnInit {
             return;
           }
 
-          const myFilteredStarters = this.filterStarters(myMatchup);
-          const opponentFilteredStarters = this.filterStarters(opponentsMatchup);
+          const myFilteredStarters = this.filterPlayers(myMatchup);
+          const opponentFilteredStarters = this.filterPlayers(opponentsMatchup);
 
           this.myTeam = {
-            starters: myFilteredStarters.map((item) => item.player),
+            starters: myFilteredStarters,
             roster_id: myMatchup.roster_id,
             points: myMatchup.points,
-            starters_points: myFilteredStarters.map((item) => myMatchup?.players_points[item.player!.player_id].toFixed(2) || '0.00'),
+            players_points: myFilteredStarters.map((player) => myMatchup?.players_points[player.player_id].toFixed(2) || '0.00'),
           };
 
           this.opponent = {
-            starters: opponentFilteredStarters.map((item) => item.player),
+            starters: opponentFilteredStarters,
             roster_id: opponentsMatchup.roster_id,
             points: opponentsMatchup.points,
-            starters_points: opponentFilteredStarters.map((item) => opponentsMatchup?.players_points[item.player!.player_id].toFixed(2) || '0.00'),
+            players_points: opponentFilteredStarters.map((player) => opponentsMatchup?.players_points[player.player_id].toFixed(2) || '0.00'),
           };
           this.updateTotalPoints();
         }),
@@ -132,15 +132,10 @@ export class MatchupComponent implements OnInit {
       .subscribe();
   }
 
-  private filterStarters(matchup: Matchup) {
-    const starters = this.getStarters(matchup);
-    return starters
-      .map((starter, index) => ({
-        player: this.allSleeperPlayers.find((player) => player.player_id === starter),
-        index: index,
-      }))
-      .filter((item) => {
-        const player = item.player;
+  private filterPlayers(matchup: Matchup) {
+    const players = this.getPlayers(matchup);
+    return players
+      .filter((player) => {
         if (!player) {
           return false;
         }
@@ -151,10 +146,31 @@ export class MatchupComponent implements OnInit {
       });
   }
 
-  private getStarters(matchup: Matchup) {
+  private getPlayers(matchup: Matchup): SleeperPlayer[] {
     return this.league.settings.best_ball === 1
-      ? [...matchup.starters, ...matchup.players.filter((p) => !matchup.starters.includes(p))]
-      : matchup.starters;
+      ? this.getBestBallPlayers(matchup)
+      : matchup.starters.map((playerId) => this.allSleeperPlayers.find((p) => p.player_id === playerId)).filter((p): p is SleeperPlayer => !!p);
+  }
+
+  private getBestBallPlayers(matchup: Matchup) {
+    const positionOrder: Record<string, number> = {
+      QB: 1,
+      RB: 2,
+      WR: 3,
+      TE: 4,
+    };
+
+    return matchup.players
+      .map((playerId) => this.allSleeperPlayers.find((p) => p.player_id === playerId))
+      .filter((p): p is SleeperPlayer => !!p)
+      .sort((a, b) => {
+        const posA = positionOrder[a.fantasy_positions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
+        const posB = positionOrder[b.fantasy_positions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
+        if (posA !== posB) return posA - posB;
+        const lastNameCmp = a.last_name.localeCompare(b.last_name);
+        if (lastNameCmp !== 0) return lastNameCmp;
+        return a.first_name.localeCompare(b.first_name);
+      });
   }
 
   private updateTeamsWithShownPoints() {
@@ -189,7 +205,7 @@ export class MatchupComponent implements OnInit {
       if (!this.teamsWithShownPoints.includes(starter.team)) {
         return '0.00';
       }
-      return roster.starters_points[index];
+      return roster.players_points[index];
     });
     return totalPointsArray.reduce((acc: number, cum: string) => acc + parseFloat(cum), 0).toFixed(2);
   }
