@@ -117,14 +117,14 @@ export class MatchupComponent implements OnInit {
             starters: myFilteredStarters.map((item) => item.player),
             roster_id: myMatchup.roster_id,
             points: myMatchup.points,
-            starters_points: myFilteredStarters.map((item) => myMatchup?.starters_points[item.index] || '0.00'),
+            starters_points: myFilteredStarters.map((item) => myMatchup?.players_points[item.player!.player_id].toFixed(2) || '0.00'),
           };
 
           this.opponent = {
             starters: opponentFilteredStarters.map((item) => item.player),
             roster_id: opponentsMatchup.roster_id,
             points: opponentsMatchup.points,
-            starters_points: opponentFilteredStarters.map((item) => opponentsMatchup?.starters_points[item.index] || '0.00'),
+            starters_points: opponentFilteredStarters.map((item) => opponentsMatchup?.players_points[item.player!.player_id].toFixed(2) || '0.00'),
           };
           this.updateTotalPoints();
         }),
