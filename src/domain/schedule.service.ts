@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { plainToInstance } from 'class-transformer';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { map, Observable, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
@@ -12,13 +12,11 @@ import { Schedule } from './schedule';
   providedIn: 'root',
 })
 export class ScheduleService {
+  private http = inject(HttpClient);
+  private dbService = inject(NgxIndexedDBService);
+
   private static readonly SCHEDULE_URL: string = `${environment.apiUrl}/schedule`;
   private readonly schedule$: ReplaySubject<Schedule[]> = new ReplaySubject(1);
-
-  constructor(
-    private http: HttpClient,
-    private dbService: NgxIndexedDBService,
-  ) {}
 
   init(): Observable<void> {
     return this.loadAll().pipe(

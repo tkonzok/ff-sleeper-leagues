@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { League } from '../domain/league';
@@ -15,6 +15,8 @@ import { ScheduleComponent } from '../components/schedule/schedule.component';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  private sleeperService = inject(SleeperService);
+
   protected readonly location = location;
   protected leagues: League[] = [];
   protected rosterIds: Map<string, number | null> = new Map<string, number | null>();
@@ -24,8 +26,6 @@ export class AppComponent implements OnInit {
   protected initialized: boolean = false;
 
   private readonly USER_ID: string = '855945059361755136';
-
-  constructor(private sleeperService: SleeperService) {}
 
   ngOnInit() {
     forkJoin({

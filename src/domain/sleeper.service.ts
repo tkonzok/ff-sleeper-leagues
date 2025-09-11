@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { plainToInstance } from 'class-transformer';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { map, Observable, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
@@ -16,14 +16,12 @@ import { SleeperPlayer } from './sleeper-player';
   providedIn: 'root',
 })
 export class SleeperService {
+  private http = inject(HttpClient);
+  private dbService = inject(NgxIndexedDBService);
+
   private static readonly SLEEPER_PLAYERS_URL: string = `${environment.apiUrl}/sleeper-players`;
   private static readonly SLEEPER_API_URL: string = 'https://api.sleeper.app/v1';
   private readonly sleeperPlayers$: ReplaySubject<SleeperPlayer[]> = new ReplaySubject(1);
-
-  constructor(
-    private http: HttpClient,
-    private dbService: NgxIndexedDBService,
-  ) {}
 
   init(): Observable<void> {
     return this.loadAll().pipe(

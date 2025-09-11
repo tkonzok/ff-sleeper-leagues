@@ -1,8 +1,8 @@
 @if (initialized) {
   <div class="flex column">
-    @for (dateGroup of filteredScheduleMapByDate; track dateGroup) {
+    @for (dateGroup of filteredScheduleMapByDate; track $index) {
       <div class="flex column">
-        @for (game of dateGroup[1]; track game) {
+        @for (game of dateGroup[1]; track $index) {
           <div class="buttons-wrapper">
             <button class="game-viewed" (click)="onSelectGameViewed(game)" [ngClass]="{ selected: viewedGames.includes(game) }">
               @if (viewedGames.includes(game)) {

@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, DestroyRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { Schedule } from '../../domain/schedule';
@@ -13,6 +13,9 @@ import { TeamLogoMapper } from '../../utils/team-logo-mapper';
   styleUrls: ['./schedule.component.css'],
 })
 export class ScheduleComponent implements OnInit {
+  private scheduleService = inject(ScheduleService);
+  private readonly destroyRef$ = inject(DestroyRef);
+
   protected fullSchedule: Schedule[] = [];
   protected filteredSchedule: Schedule[] = [];
   protected filteredScheduleMapByDate: [string, Schedule[]][] = [];
@@ -44,11 +47,6 @@ export class ScheduleComponent implements OnInit {
   @Output() selectGame: EventEmitter<Schedule> = new EventEmitter<Schedule>();
   @Output() toggleGameViewed: EventEmitter<Schedule> = new EventEmitter<Schedule>();
   @Output() toggleAllGamesViewed: EventEmitter<Schedule[]> = new EventEmitter<Schedule[]>();
-
-  constructor(
-    private scheduleService: ScheduleService,
-    private readonly destroyRef$: DestroyRef,
-  ) {}
 
   ngOnInit() {
     this.getSchedule().subscribe(() => {

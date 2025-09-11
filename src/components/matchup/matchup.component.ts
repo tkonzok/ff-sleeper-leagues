@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { League } from '../../domain/league';
 import { Matchup } from '../../domain/matchup';
@@ -16,6 +16,8 @@ import { StarterComponent } from './starter/starter.component';
   styleUrls: ['./matchup.component.css'],
 })
 export class MatchupComponent implements OnInit {
+  private sleeperService = inject(SleeperService);
+
   protected allSleeperPlayers: SleeperPlayer[] = [];
   protected myTeam?: MatchupRoster;
   protected opponent?: MatchupRoster;
@@ -76,8 +78,6 @@ export class MatchupComponent implements OnInit {
   get viewedGames(): Schedule[] {
     return this._viewedGames;
   }
-
-  constructor(private sleeperService: SleeperService) {}
 
   ngOnInit(): void {
     this.sleeperService

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { catchError, EMPTY, forkJoin, map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { STORE_NAME_LAST_UPDATE } from '../app/indexed-db-config';
@@ -15,14 +15,12 @@ export enum MasterDataInitStatus {
   providedIn: 'root',
 })
 export class MasterDataService {
+  private scheduleService = inject(ScheduleService);
+  private sleeperService = inject(SleeperService);
+  private dbService = inject(NgxIndexedDBService);
+
   private initStatus = new ReplaySubject<MasterDataInitStatus>(1);
   private lastUpdated = new ReplaySubject<Date>(1);
-
-  constructor(
-    private scheduleService: ScheduleService,
-    private sleeperService: SleeperService,
-    private dbService: NgxIndexedDBService,
-  ) {}
 
   refresh() {
     forkJoin({
