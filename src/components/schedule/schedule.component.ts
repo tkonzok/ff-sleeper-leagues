@@ -1,4 +1,4 @@
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, DestroyRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
@@ -8,7 +8,7 @@ import { TeamLogoMapper } from '../../utils/team-logo-mapper';
 
 @Component({
   selector: 'app-schedule',
-  imports: [NgForOf, NgClass, NgIf],
+  imports: [NgClass],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })

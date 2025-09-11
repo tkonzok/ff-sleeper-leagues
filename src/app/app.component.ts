@@ -1,4 +1,4 @@
-import { NgForOf, NgIf } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
@@ -10,7 +10,7 @@ import { ScheduleComponent } from '../components/schedule/schedule.component';
 
 @Component({
   selector: 'app-root',
-  imports: [NgForOf, NgIf, ReactiveFormsModule, MatchupComponent, ScheduleComponent],
+  imports: [ReactiveFormsModule, MatchupComponent, ScheduleComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })

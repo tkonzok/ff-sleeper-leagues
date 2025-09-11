@@ -5,43 +5,50 @@
         {{ league.settings.best_ball === 1 ? league.name + " (Bestball)" : league.name }}
       </h2>
     </div>
-    <div
-      *ngIf="(myTeam?.starters?.length || opponent?.starters?.length) && teamsWithShownPoints.length"
-      class="flex total-points"
-    >
-      <h2>{{ myTotalPoints }}</h2>
-      <h2>{{ opponentTotalPoints }}</h2>
-      <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
-        ({{ pointDifferential }})
-      </h2>
-    </div>
+    @if ((myTeam?.starters?.length || opponent?.starters?.length) && teamsWithShownPoints.length) {
+      <div
+        class="flex total-points"
+        >
+        <h2>{{ myTotalPoints }}</h2>
+        <h2>{{ opponentTotalPoints }}</h2>
+        <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
+          ({{ pointDifferential }})
+        </h2>
+      </div>
+    }
   </div>
-  <div *ngIf="myTeam?.starters?.length || opponent?.starters?.length" class="content">
-    <div class="flex column">
-      <span *ngFor="let starter of myTeam?.starters; let index = index">
-        <app-starter
-          [starter]="starter"
-          [isOpponent]="false"
+  @if (myTeam?.starters?.length || opponent?.starters?.length) {
+    <div class="content">
+      <div class="flex column">
+        @for (starter of myTeam?.starters; track $index; let index = $index) {
+          <span>
+            <app-starter
+              [starter]="starter"
+              [isOpponent]="false"
           [points]="
             starter?.team && teamsWithShownPoints.includes(starter!.team) && myTeam?.players_points?.length
               ? myTeam!.players_points[index].toString()
               : null
           "
-        ></app-starter>
-      </span>
-    </div>
-    <div class="flex column">
-      <span class="player" *ngFor="let starter of opponent?.starters; let index = index">
-        <app-starter
-          [starter]="starter"
-          [isOpponent]="true"
+            ></app-starter>
+          </span>
+        }
+      </div>
+      <div class="flex column">
+        @for (starter of opponent?.starters; track $index; let index = $index) {
+          <span class="player">
+            <app-starter
+              [starter]="starter"
+              [isOpponent]="true"
           [points]="
             starter?.team && teamsWithShownPoints.includes(starter!.team) && opponent?.players_points?.length
               ? opponent!.players_points[index].toString()
               : null
           "
-        ></app-starter>
-      </span>
+            ></app-starter>
+          </span>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

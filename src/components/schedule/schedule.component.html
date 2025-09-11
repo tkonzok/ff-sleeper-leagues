@@ -1,30 +1,40 @@
-<div *ngIf="initialized" class="flex column">
-  <div class="flex column" *ngFor="let dateGroup of filteredScheduleMapByDate">
-    <div class="buttons-wrapper" *ngFor="let game of dateGroup[1]">
-      <button class="game-viewed" (click)="onSelectGameViewed(game)" [ngClass]="{ selected: viewedGames.includes(game) }">
-        <img *ngIf="viewedGames.includes(game)" src="assets/icons/view.png" alt="open eye icon" />
-        <img *ngIf="!viewedGames.includes(game)" src="assets/icons/hide.png" alt="closed eye icon" />
+@if (initialized) {
+  <div class="flex column">
+    @for (dateGroup of filteredScheduleMapByDate; track dateGroup) {
+      <div class="flex column">
+        @for (game of dateGroup[1]; track game) {
+          <div class="buttons-wrapper">
+            <button class="game-viewed" (click)="onSelectGameViewed(game)" [ngClass]="{ selected: viewedGames.includes(game) }">
+              @if (viewedGames.includes(game)) {
+                <img src="assets/icons/view.png" alt="open eye icon" />
+              }
+              @if (!viewedGames.includes(game)) {
+                <img src="assets/icons/hide.png" alt="closed eye icon" />
+              }
+            </button>
+            <button class="select-game" (click)="onSelectGame(game)" [ngClass]="{ selected: selectedGame === game }">
+              <img src="assets/logos/{{ teamLogoPaths[game.guestTeam] }}" alt="guest team logo" height="24px" />
+              <img src="assets/logos/{{ teamLogoPaths[game.homeTeam] }}" alt="home team logo" height="24px" />
+            </button>
+          </div>
+        }
+        <span class="separator"></span>
+      </div>
+    }
+    <span>Show Points:</span>
+    <div class="buttons-wrapper">
+      <button class="game-viewed" (click)="onSelectAllGamesViewed(true)" [ngClass]="{ selected: true }">
+        <img src="assets/icons/view.png" alt="open eye icon" />
       </button>
-      <button class="select-game" (click)="onSelectGame(game)" [ngClass]="{ selected: selectedGame === game }">
-        <img src="assets/logos/{{ teamLogoPaths[game.guestTeam] }}" alt="guest team logo" height="24px" />
-        <img src="assets/logos/{{ teamLogoPaths[game.homeTeam] }}" alt="home team logo" height="24px" />
+      <button class="game-viewed" (click)="onSelectAllGamesViewed(false)" [ngClass]="{ selected: false }">
+        <img src="assets/icons/hide.png" alt="closed eye icon" />
       </button>
     </div>
-    <span class="separator"></span>
+    <span>Update Schedule:</span>
+    <div class="buttons-wrapper">
+      <button class="update-button" (click)="updateSchedule()">
+        <img src="assets/icons/reload.png" alt="refresh" />
+      </button>
+    </div>
   </div>
-  <span>Show Points:</span>
-  <div class="buttons-wrapper">
-    <button class="game-viewed" (click)="onSelectAllGamesViewed(true)" [ngClass]="{ selected: true }">
-      <img src="assets/icons/view.png" alt="open eye icon" />
-    </button>
-    <button class="game-viewed" (click)="onSelectAllGamesViewed(false)" [ngClass]="{ selected: false }">
-      <img src="assets/icons/hide.png" alt="closed eye icon" />
-    </button>
-  </div>
-  <span>Update Schedule:</span>
-  <div class="buttons-wrapper">
-    <button class="update-button" (click)="updateSchedule()">
-      <img src="assets/icons/reload.png" alt="refresh" />
-    </button>
-  </div>
-</div>
+}

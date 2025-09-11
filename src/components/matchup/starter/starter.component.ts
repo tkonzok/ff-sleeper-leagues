@@ -1,11 +1,11 @@
-import { NgIf } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { SleeperPlayer } from '../../../domain/sleeper-player';
 import { TeamLogoMapper } from '../../../utils/team-logo-mapper';
 
 @Component({
   selector: 'app-starter',
-  imports: [NgIf],
+  imports: [],
   templateUrl: './starter.component.html',
   styleUrl: './starter.component.css',
 })

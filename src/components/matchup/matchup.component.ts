@@ -1,4 +1,4 @@
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { League } from '../../domain/league';
@@ -11,7 +11,7 @@ import { StarterComponent } from './starter/starter.component';
 
 @Component({
   selector: 'app-matchup',
-  imports: [NgForOf, NgIf, StarterComponent, NgClass],
+  imports: [StarterComponent, NgClass],
   templateUrl: './matchup.component.html',
   styleUrls: ['./matchup.component.css'],
 })
