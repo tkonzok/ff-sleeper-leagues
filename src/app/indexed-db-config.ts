@@ -1,12 +1,12 @@
 import { DBConfig } from 'ngx-indexed-db';
 
-const storeNameSleeperPlayers = 'sleeperPlayers';
+const storeNameSleeperPlayers = 'players';
 const storeNameSchedule = 'schedule';
 const storeNameLastUpdate = 'lastUpdate';
 
 export const INDEXED_DB_CONFIG: DBConfig = {
   name: 'IndexedDBLeagues',
-  version: 2,
+  version: 1,
   objectStoresMeta: [
     {
       store: storeNameSleeperPlayers,
