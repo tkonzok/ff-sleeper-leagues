@@ -18,22 +18,24 @@
         </button>
       </div>
       <div class="schedule-container flex column">
-        <app-schedule [week]="selectedWeek"
+        <app-schedule
+          [week]="selectedWeek"
           [selectedGame]="selectedGame"
           [viewedGames]="viewedGames"
           (selectGame)="onSelectGame($event)"
           (toggleGameViewed)="onToggleGameViewed($event)"
           (toggleAllGamesViewed)="onToggleAllGamesViewed($event)"
-         />
+        />
       </div>
       <div class="matchup-container flex column">
         @for (league of leagues; track league) {
-          <app-matchup [league]="league"
-            [rosterId]="rosterIds.get(league.league_id)"
+          <app-matchup
+            [league]="league"
+            [rosterId]="rosterIds.get(league.leagueId)"
             [week]="selectedWeek"
             [selectedGame]="selectedGame"
             [viewedGames]="viewedGames"
-           />
+          />
         }
         <button class="update-button" (click)="updatePlayers()">
           <img src="assets/icons/reload.png" alt="refresh" />

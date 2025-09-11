@@ -4,8 +4,8 @@ export class NflState {
   @Expose()
   week!: number;
 
-  @Expose()
-  display_week!: number;
+  @Expose({ name: 'display_week' })
+  displayWeek!: number;
 
   @Expose()
   season!: string;

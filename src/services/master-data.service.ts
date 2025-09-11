@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { catchError, EMPTY, forkJoin, map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { STORE_NAME_LAST_UPDATE } from '../app/indexed-db-config';

@@ -2,8 +2,8 @@ import { NgClass } from '@angular/common';
 import { Component, DestroyRef, Input, OnInit, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
-import { Schedule } from '../../domain/schedule';
-import { ScheduleService } from '../../domain/schedule.service';
+import { Schedule } from '../../classes/schedule';
+import { ScheduleService } from '../../services/schedule.service';
 import { TeamLogoMapper } from '../../utils/team-logo-mapper';
 
 @Component({

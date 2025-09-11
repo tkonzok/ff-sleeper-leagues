@@ -3,14 +3,14 @@ import { SleeperPlayer } from './sleeper-player';
 
 export class MatchupRoster {
   @Expose()
-  starters!: (SleeperPlayer | undefined)[];
-
-  @Expose()
-  roster_id!: number;
+  rosterId!: number;
 
   @Expose()
   points!: string;
 
   @Expose()
-  players_points!: string[];
+  players!: (SleeperPlayer | undefined)[];
+
+  @Expose()
+  playersPoints!: string[];
 }

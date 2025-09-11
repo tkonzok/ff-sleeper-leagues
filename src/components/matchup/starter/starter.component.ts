@@ -1,6 +1,5 @@
-
 import { Component, Input, input } from '@angular/core';
-import { SleeperPlayer } from '../../../domain/sleeper-player';
+import { SleeperPlayer } from '../../../classes/sleeper-player';
 import { TeamLogoMapper } from '../../../utils/team-logo-mapper';
 
 @Component({

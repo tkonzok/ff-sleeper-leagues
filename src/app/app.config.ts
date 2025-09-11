@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideIndexedDb } from 'ngx-indexed-db';
-import { MasterDataService } from '../domain/master-data.service';
+import { MasterDataService } from '../services/master-data.service';
 import { INDEXED_DB_CONFIG } from './indexed-db-config';
 
 export function initMasterDataFactory(masterDataService: MasterDataService) {

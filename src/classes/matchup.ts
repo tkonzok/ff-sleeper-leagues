@@ -4,23 +4,23 @@ export class Matchup {
   @Expose()
   starters!: string[];
 
-  @Expose()
-  roster_id!: number;
+  @Expose({ name: 'roster_id' })
+  rosterId!: number;
 
   @Expose()
   players!: string[];
 
-  @Expose()
-  matchup_id!: number;
+  @Expose({ name: 'matchup_id' })
+  matchupId!: number;
 
   @Expose()
   @Transform(({ value }) => value.toFixed(2), { toClassOnly: true })
   points!: string;
 
-  @Expose()
+  @Expose({ name: 'starters_points' })
   @Transform(({ value }) => value.map((num: number) => num.toFixed(2)), { toClassOnly: true })
-  starters_points!: string[];
+  startersPoints!: string[];
 
-  @Expose()
-  players_points!: Record<string, number>;
+  @Expose({ name: 'players_points' })
+  playersPoints!: Record<string, number>;
 }

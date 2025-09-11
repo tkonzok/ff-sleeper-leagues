@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { plainToInstance } from 'class-transformer';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { map, Observable, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { STORE_NAME_SLEEPER_PLAYERS } from '../app/indexed-db-config';
+import { League } from '../classes/league';
+import { Matchup } from '../classes/matchup';
+import { NflState } from '../classes/nfl-state';
+import { Roster } from '../classes/roster';
+import { SleeperPlayer } from '../classes/sleeper-player';
 import { environment } from '../environments/environment';
 import { ObservableInstanceMapper } from '../utils/observable-instance-mapper';
-import { League } from './league';
-import { Matchup } from './matchup';
-import { NflState } from './nfl-state';
-import { Roster } from './roster';
-import { SleeperPlayer } from './sleeper-player';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +48,7 @@ export class SleeperService {
   getRosterId(leagueId: string, userId: string): Observable<number | null> {
     return this.http.get<Roster[]>(`${SleeperService.SLEEPER_API_URL}/league/${leagueId}/rosters`).pipe(
       map((rosters) => plainToInstance(Roster, rosters, { excludeExtraneousValues: true })),
-      map((rosters: Roster[]) => rosters.find((roster) => roster.owner_id === userId)?.roster_id || null),
+      map((rosters: Roster[]) => rosters.find((roster) => roster.ownerId === userId)?.rosterId || null),
     );
   }
 
@@ -59,7 +59,7 @@ export class SleeperService {
   }
 
   getWeek(): Observable<number> {
-    return this.http.get<NflState>(`${SleeperService.SLEEPER_API_URL}/state/nfl`).pipe(map((state) => state.display_week));
+    return this.http.get<NflState>(`${SleeperService.SLEEPER_API_URL}/state/nfl`).pipe(map((state) => state.displayWeek));
   }
 
   refreshAll() {

@@ -1,12 +1,11 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
-import { League } from '../domain/league';
-import { Schedule } from '../domain/schedule';
-import { SleeperService } from '../domain/sleeper.service';
+import { League } from '../classes/league';
+import { Schedule } from '../classes/schedule';
 import { MatchupComponent } from '../components/matchup/matchup.component';
 import { ScheduleComponent } from '../components/schedule/schedule.component';
+import { SleeperService } from '../services/sleeper.service';
 
 @Component({
   selector: 'app-root',
@@ -32,9 +31,9 @@ export class AppComponent implements OnInit {
       leagues: this.sleeperService.getLeagues(this.USER_ID).pipe(
         switchMap((leagues) => {
           const leagueObservables = leagues.map((league: League) =>
-            this.sleeperService.getRosterId(league.league_id, this.USER_ID).pipe(
+            this.sleeperService.getRosterId(league.leagueId, this.USER_ID).pipe(
               tap((rosterId: number | null) => {
-                this.rosterIds.set(league.league_id, rosterId);
+                this.rosterIds.set(league.leagueId, rosterId);
               }),
               switchMap(() => [league]),
             ),
@@ -99,11 +98,11 @@ export class AppComponent implements OnInit {
 
   private sortLeagues(leagues: League[]) {
     return leagues.sort((a, b) => {
-      const order = (val?: number) => {
+      const order = (val?: boolean) => {
         return val ? 1 : 0;
       };
 
-      return order(a.settings.best_ball) - order(b.settings.best_ball);
+      return order(a.settings.bestBall) - order(b.settings.bestBall);
     });
   }
 }

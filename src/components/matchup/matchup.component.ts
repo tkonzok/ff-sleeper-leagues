@@ -1,12 +1,12 @@
 import { NgClass } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { map, tap } from 'rxjs';
-import { League } from '../../domain/league';
-import { Matchup } from '../../domain/matchup';
-import { MatchupRoster } from '../../domain/matchup-roster';
-import { Schedule } from '../../domain/schedule';
-import { SleeperPlayer } from '../../domain/sleeper-player';
-import { SleeperService } from '../../domain/sleeper.service';
+import { League } from '../../classes/league';
+import { Matchup } from '../../classes/matchup';
+import { MatchupRoster } from '../../classes/matchup-roster';
+import { Schedule } from '../../classes/schedule';
+import { SleeperPlayer } from '../../classes/sleeper-player';
+import { SleeperService } from '../../services/sleeper.service';
 import { StarterComponent } from './starter/starter.component';
 
 @Component({
@@ -91,17 +91,17 @@ export class MatchupComponent implements OnInit {
   }
 
   private loadMatchups(): void {
-    if (!this._league?.league_id || this._rosterId === undefined || this._rosterId === null) {
+    if (!this._league?.leagueId || this._rosterId === undefined || this._rosterId === null) {
       return;
     }
 
     this.sleeperService
-      .getMatchups(this._league.league_id, this._week.toString())
+      .getMatchups(this._league.leagueId, this._week.toString())
       .pipe(
         tap((matchups) => {
-          let myMatchup = matchups.find((matchup) => matchup.roster_id === this._rosterId);
+          let myMatchup = matchups.find((matchup) => matchup.rosterId === this._rosterId);
           let opponentsMatchup = matchups.find(
-            (matchup) => matchup.matchup_id === myMatchup?.matchup_id && matchup.roster_id !== this._rosterId,
+            (matchup) => matchup.matchupId === myMatchup?.matchupId && matchup.rosterId !== this._rosterId,
           );
 
           if (!myMatchup || !opponentsMatchup) {
@@ -112,18 +112,18 @@ export class MatchupComponent implements OnInit {
           const opponentFilteredStarters = this.filterPlayers(opponentsMatchup);
 
           this.myTeam = {
-            starters: myFilteredStarters,
-            roster_id: myMatchup.roster_id,
+            players: myFilteredStarters,
+            rosterId: myMatchup.rosterId,
             points: myMatchup.points,
-            players_points: myFilteredStarters.map((player) => myMatchup?.players_points[player.player_id].toFixed(2) || '0.00'),
+            playersPoints: myFilteredStarters.map((player) => myMatchup?.playersPoints[player.playerId].toFixed(2) || '0.00'),
           };
 
           this.opponent = {
-            starters: opponentFilteredStarters,
-            roster_id: opponentsMatchup.roster_id,
+            players: opponentFilteredStarters,
+            rosterId: opponentsMatchup.rosterId,
             points: opponentsMatchup.points,
-            players_points: opponentFilteredStarters.map(
-              (player) => opponentsMatchup?.players_points[player.player_id].toFixed(2) || '0.00',
+            playersPoints: opponentFilteredStarters.map(
+              (player) => opponentsMatchup?.playersPoints[player.playerId].toFixed(2) || '0.00',
             ),
           };
           this.updateTotalPoints();
@@ -146,10 +146,10 @@ export class MatchupComponent implements OnInit {
   }
 
   private getPlayers(matchup: Matchup): SleeperPlayer[] {
-    return this.league.settings.best_ball === 1
+    return this.league.settings.bestBall
       ? this.getBestBallPlayers(matchup)
       : matchup.starters
-          .map((playerId) => this.allSleeperPlayers.find((p) => p.player_id === playerId))
+          .map((playerId) => this.allSleeperPlayers.find((p) => p.playerId === playerId))
           .filter((p): p is SleeperPlayer => !!p);
   }
 
@@ -162,15 +162,15 @@ export class MatchupComponent implements OnInit {
     };
 
     return matchup.players
-      .map((playerId) => this.allSleeperPlayers.find((p) => p.player_id === playerId))
+      .map((playerId) => this.allSleeperPlayers.find((p) => p.playerId === playerId))
       .filter((p): p is SleeperPlayer => !!p)
       .sort((a, b) => {
-        const posA = positionOrder[a.fantasy_positions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
-        const posB = positionOrder[b.fantasy_positions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
+        const posA = positionOrder[a.fantasyPositions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
+        const posB = positionOrder[b.fantasyPositions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
         if (posA !== posB) return posA - posB;
-        const lastNameCmp = a.last_name.localeCompare(b.last_name);
+        const lastNameCmp = a.lastName.localeCompare(b.lastName);
         if (lastNameCmp !== 0) return lastNameCmp;
-        return a.first_name.localeCompare(b.first_name);
+        return a.firstName.localeCompare(b.firstName);
       });
   }
 
@@ -196,17 +196,17 @@ export class MatchupComponent implements OnInit {
   }
 
   private getPointsOfViewedGames(roster: MatchupRoster): string {
-    if (!roster.starters) {
+    if (!roster.players) {
       return '0.00';
     }
-    const totalPointsArray: string[] = roster.starters.map((starter, index) => {
+    const totalPointsArray: string[] = roster.players.map((starter, index) => {
       if (!starter) {
         return '0.00';
       }
       if (!this.teamsWithShownPoints.includes(starter.team)) {
         return '0.00';
       }
-      return roster.players_points[index];
+      return roster.playersPoints[index];
     });
     return totalPointsArray.reduce((acc: number, cum: string) => acc + parseFloat(cum), 0).toFixed(2);
   }
@@ -222,15 +222,15 @@ export class MatchupComponent implements OnInit {
     // Map player_id → player
     const playerMap: Record<string, SleeperPlayer> = {};
     players.forEach((p) => {
-      playerMap[p.player_id] = p;
+      playerMap[p.playerId] = p;
     });
 
     // Build list of {id, points, positions}
     const playerPool = matchup.players
       .map((pid) => ({
         id: pid,
-        points: matchup.players_points[pid] ?? 0,
-        positions: playerMap[pid]?.fantasy_positions ?? [],
+        points: matchup.playersPoints[pid] ?? 0,
+        positions: playerMap[pid]?.fantasyPositions ?? [],
       }))
       .filter((p) => p.positions.length > 0);
 
@@ -248,7 +248,7 @@ export class MatchupComponent implements OnInit {
     const used = new Set<string>();
 
     // Fill each roster slot in order
-    for (const slot of league.roster_positions) {
+    for (const slot of league.rosterPositions) {
       const candidate = playerPool.find((p) => !used.has(p.id) && canFill(slot, p));
       if (candidate) {
         lineup.push(candidate.id);
@@ -258,7 +258,7 @@ export class MatchupComponent implements OnInit {
       }
     }
 
-    const totalPoints = lineup.reduce((sum, pid) => sum + (matchup.players_points[pid] ?? 0), 0);
+    const totalPoints = lineup.reduce((sum, pid) => sum + (matchup.playersPoints[pid] ?? 0), 0);
 
     return { lineup, totalPoints };
   }

@@ -10,7 +10,7 @@ export const INDEXED_DB_CONFIG: DBConfig = {
   objectStoresMeta: [
     {
       store: storeNameSleeperPlayers,
-      storeConfig: { keyPath: 'player_id', autoIncrement: false },
+      storeConfig: { keyPath: 'playerId', autoIncrement: false },
       storeSchema: [],
     },
     {

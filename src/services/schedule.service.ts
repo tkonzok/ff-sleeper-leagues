@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { plainToInstance } from 'class-transformer';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { map, Observable, of, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { STORE_NAME_SCHEDULE } from '../app/indexed-db-config';
+import { Schedule } from '../classes/schedule';
 import { environment } from '../environments/environment';
 import { ObservableInstanceMapper } from '../utils/observable-instance-mapper';
-import { Schedule } from './schedule';
 
 @Injectable({
   providedIn: 'root',
