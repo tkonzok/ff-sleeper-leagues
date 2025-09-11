@@ -22,8 +22,6 @@ export class MatchupComponent implements OnInit {
   protected myTeam?: MatchupRoster;
   protected opponent?: MatchupRoster;
   protected teamsWithShownPoints: string[] = [];
-  protected myTotalPoints: string = '';
-  protected opponentTotalPoints: string = '';
   protected pointDifferential: string = '';
 
   private _league!: League;
@@ -72,6 +70,7 @@ export class MatchupComponent implements OnInit {
   set viewedGames(games: Schedule[]) {
     this._viewedGames = games;
     this.updateTeamsWithShownPoints();
+    this.updateBestBallLineups();
     this.updateTotalPoints();
   }
   get viewedGames(): Schedule[] {
@@ -108,28 +107,36 @@ export class MatchupComponent implements OnInit {
             return;
           }
 
-          const myFilteredStarters = this.filterPlayers(myMatchup);
-          const opponentFilteredStarters = this.filterPlayers(opponentsMatchup);
+          const myFilteredPlayers = this.filterPlayers(myMatchup);
+          const opponentFilteredPlayers = this.filterPlayers(opponentsMatchup);
 
           this.myTeam = {
-            players: myFilteredStarters,
+            players: myFilteredPlayers,
             rosterId: myMatchup.rosterId,
-            points: myMatchup.points,
-            playersPoints: myFilteredStarters.map((player) => myMatchup?.playersPoints[player.playerId].toFixed(2) || '0.00'),
+            points: '',
+            playersPoints: myFilteredPlayers.map((player) => myMatchup?.playersPoints[player.playerId].toFixed(2) || '0.00'),
           };
 
           this.opponent = {
-            players: opponentFilteredStarters,
+            players: opponentFilteredPlayers,
             rosterId: opponentsMatchup.rosterId,
-            points: opponentsMatchup.points,
-            playersPoints: opponentFilteredStarters.map(
+            points: '',
+            playersPoints: opponentFilteredPlayers.map(
               (player) => opponentsMatchup?.playersPoints[player.playerId].toFixed(2) || '0.00',
             ),
           };
+          this.updateBestBallLineups();
           this.updateTotalPoints();
         }),
       )
       .subscribe();
+  }
+
+  private updateBestBallLineups() {
+    if (this.myTeam && this.opponent && this.league.settings.bestBall) {
+      this.myTeam.bestBallLineup = this.buildBestBallLineup(this._league, this.myTeam);
+      this.opponent.bestBallLineup = this.buildBestBallLineup(this._league, this.opponent);
+    }
   }
 
   private filterPlayers(matchup: Matchup) {
@@ -190,12 +197,15 @@ export class MatchupComponent implements OnInit {
     if (!this.myTeam || !this.opponent) {
       return;
     }
-    this.myTotalPoints = this.getPointsOfViewedGames(this.myTeam);
-    this.opponentTotalPoints = this.getPointsOfViewedGames(this.opponent);
+    this.myTeam.points = this.getPointsOfViewedGames(this.myTeam);
+    this.opponent.points = this.getPointsOfViewedGames(this.opponent);
     this.pointDifferential = this.getPointDifferential();
   }
 
   private getPointsOfViewedGames(roster: MatchupRoster): string {
+    if (roster.bestBallLineup) {
+      return roster.bestBallLineup.reduce((sum, playerObject) => sum + (playerObject?.points ?? 0), 0).toFixed(2);
+    }
     if (!roster.players) {
       return '0.00';
     }
@@ -212,54 +222,52 @@ export class MatchupComponent implements OnInit {
   }
 
   private getPointDifferential() {
-    const myPoints = parseFloat(this.myTotalPoints);
-    const opponentPoints = parseFloat(this.opponentTotalPoints);
+    const myPoints = parseFloat(this.myTeam?.points ?? '0');
+    const opponentPoints = parseFloat(this.opponent?.points ?? '0');
     const difference = myPoints - opponentPoints;
     return difference > 0 ? `+${difference.toFixed(2)}` : difference.toFixed(2);
   }
 
-  private buildBestBallLineup(league: League, matchup: Matchup, players: SleeperPlayer[]) {
-    // Map player_id → player
-    const playerMap: Record<string, SleeperPlayer> = {};
-    players.forEach((p) => {
-      playerMap[p.playerId] = p;
-    });
-
-    // Build list of {id, points, positions}
-    const playerPool = matchup.players
-      .map((pid) => ({
-        id: pid,
-        points: matchup.playersPoints[pid] ?? 0,
-        positions: playerMap[pid]?.fantasyPositions ?? [],
+  private buildBestBallLineup(league: League, roster: MatchupRoster) {
+    // Build pool of available players with id, points, positions, and team
+    const playerPool = roster.players
+      .map((player, index) => ({
+        player,
+        id: player?.playerId ?? `unknown_${index}`,
+        team: player?.team ?? '',
+        points: parseFloat(roster.playersPoints[index] ?? '0'),
+        positions: player?.fantasyPositions ?? [],
       }))
-      .filter((p) => p.positions.length > 0);
+      // Only consider players from teams with shown points
+      .filter((p) => p.player !== undefined && p.positions.length > 0 && this.teamsWithShownPoints.includes(p.team));
 
-    // Sort by points desc
+    // Sort by points descending
     playerPool.sort((a, b) => b.points - a.points);
 
     // Helper: check if player can fill a slot
     const canFill = (slot: string, player: { positions: string[] }) => {
-      if (slot === 'FLEX') return player.positions.some((pos) => ['RB', 'WR', 'TE'].includes(pos));
-      if (slot === 'SUPER_FLEX') return player.positions.some((pos) => ['QB', 'RB', 'WR', 'TE'].includes(pos));
-      return player.positions.includes(slot); // strict match
+      if (slot === 'FLEX') {
+        return player.positions.some((pos) => ['RB', 'WR', 'TE'].includes(pos));
+      }
+      if (slot === 'SUPER_FLEX') {
+        return player.positions.some((pos) => ['QB', 'RB', 'WR', 'TE'].includes(pos));
+      }
+      return player.positions.includes(slot); // strict position match
     };
 
-    const lineup: string[] = [];
+    const lineup: ({ player: SleeperPlayer; points: number } | null)[] = [];
     const used = new Set<string>();
 
     // Fill each roster slot in order
     for (const slot of league.rosterPositions) {
       const candidate = playerPool.find((p) => !used.has(p.id) && canFill(slot, p));
       if (candidate) {
-        lineup.push(candidate.id);
+        lineup.push({ player: candidate.player!, points: candidate.points });
         used.add(candidate.id);
       } else {
-        lineup.push(null as any); // empty slot
+        lineup.push(null); // no eligible player for this slot
       }
     }
-
-    const totalPoints = lineup.reduce((sum, pid) => sum + (matchup.playersPoints[pid] ?? 0), 0);
-
-    return { lineup, totalPoints };
+    return lineup;
   }
 }

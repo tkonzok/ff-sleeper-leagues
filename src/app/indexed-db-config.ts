@@ -6,7 +6,7 @@ const storeNameLastUpdate = 'lastUpdate';
 
 export const INDEXED_DB_CONFIG: DBConfig = {
   name: 'IndexedDBLeagues',
-  version: 1,
+  version: 2,
   objectStoresMeta: [
     {
       store: storeNameSleeperPlayers,

@@ -7,8 +7,8 @@
     </div>
     @if ((myTeam?.players?.length || opponent?.players?.length) && teamsWithShownPoints.length) {
       <div class="flex total-points">
-        <h2>{{ myTotalPoints }}</h2>
-        <h2>{{ opponentTotalPoints }}</h2>
+        <h2>{{ myTeam!.points }}</h2>
+        <h2>{{ opponent!.points }}</h2>
         <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
           ({{ pointDifferential }})
         </h2>

@@ -13,4 +13,7 @@ export class MatchupRoster {
 
   @Expose()
   playersPoints!: string[];
+
+  @Expose()
+  bestBallLineup?: ({ player: SleeperPlayer; points: number } | null)[];
 }
