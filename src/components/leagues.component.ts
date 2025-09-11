@@ -9,11 +9,10 @@ import { MatchupComponent } from './matchup/matchup.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 
 @Component({
-  selector: 'app-leagues',
-  standalone: true,
-  imports: [NgForOf, NgIf, ReactiveFormsModule, MatchupComponent, ScheduleComponent],
-  templateUrl: './leagues.component.html',
-  styleUrls: ['./leagues.component.css'],
+    selector: 'app-leagues',
+    imports: [NgForOf, NgIf, ReactiveFormsModule, MatchupComponent, ScheduleComponent],
+    templateUrl: './leagues.component.html',
+    styleUrls: ['./leagues.component.css']
 })
 export class LeaguesComponent implements OnInit {
   protected readonly location = location;

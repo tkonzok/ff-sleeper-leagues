@@ -10,11 +10,10 @@ import { SleeperService } from '../../domain/sleeper.service';
 import { StarterComponent } from './starter/starter.component';
 
 @Component({
-  selector: 'app-matchup',
-  standalone: true,
-  imports: [NgForOf, NgIf, StarterComponent, NgClass],
-  templateUrl: './matchup.component.html',
-  styleUrls: ['./matchup.component.css'],
+    selector: 'app-matchup',
+    imports: [NgForOf, NgIf, StarterComponent, NgClass],
+    templateUrl: './matchup.component.html',
+    styleUrls: ['./matchup.component.css']
 })
 export class MatchupComponent implements OnInit {
   protected allSleeperPlayers: SleeperPlayer[] = [];

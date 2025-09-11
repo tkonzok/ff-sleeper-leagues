@@ -7,11 +7,10 @@ import { ScheduleService } from '../../domain/schedule.service';
 import { TeamLogoMapper } from '../../utils/team-logo-mapper';
 
 @Component({
-  selector: 'app-schedule',
-  standalone: true,
-  imports: [NgForOf, NgClass, NgOptimizedImage, NgIf],
-  templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.css'],
+    selector: 'app-schedule',
+    imports: [NgForOf, NgClass, NgOptimizedImage, NgIf],
+    templateUrl: './schedule.component.html',
+    styleUrls: ['./schedule.component.css']
 })
 export class ScheduleComponent implements OnInit {
   protected fullSchedule: Schedule[] = [];
