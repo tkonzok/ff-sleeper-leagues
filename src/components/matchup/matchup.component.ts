@@ -10,10 +10,10 @@ import { SleeperService } from '../../domain/sleeper.service';
 import { StarterComponent } from './starter/starter.component';
 
 @Component({
-    selector: 'app-matchup',
-    imports: [NgForOf, NgIf, StarterComponent, NgClass],
-    templateUrl: './matchup.component.html',
-    styleUrls: ['./matchup.component.css']
+  selector: 'app-matchup',
+  imports: [NgForOf, NgIf, StarterComponent, NgClass],
+  templateUrl: './matchup.component.html',
+  styleUrls: ['./matchup.component.css'],
 })
 export class MatchupComponent implements OnInit {
   protected allSleeperPlayers: SleeperPlayer[] = [];
@@ -123,7 +123,9 @@ export class MatchupComponent implements OnInit {
             starters: opponentFilteredStarters,
             roster_id: opponentsMatchup.roster_id,
             points: opponentsMatchup.points,
-            players_points: opponentFilteredStarters.map((player) => opponentsMatchup?.players_points[player.player_id].toFixed(2) || '0.00'),
+            players_points: opponentFilteredStarters.map(
+              (player) => opponentsMatchup?.players_points[player.player_id].toFixed(2) || '0.00',
+            ),
           };
           this.updateTotalPoints();
         }),
@@ -133,22 +135,23 @@ export class MatchupComponent implements OnInit {
 
   private filterPlayers(matchup: Matchup) {
     const players = this.getPlayers(matchup);
-    return players
-      .filter((player) => {
-        if (!player) {
-          return false;
-        }
-        if (this.selectedGame === undefined) {
-          return true;
-        }
-        return [this.selectedGame?.guestTeam, this.selectedGame?.homeTeam].includes(player.team);
-      });
+    return players.filter((player) => {
+      if (!player) {
+        return false;
+      }
+      if (this.selectedGame === undefined) {
+        return true;
+      }
+      return [this.selectedGame?.guestTeam, this.selectedGame?.homeTeam].includes(player.team);
+    });
   }
 
   private getPlayers(matchup: Matchup): SleeperPlayer[] {
     return this.league.settings.best_ball === 1
       ? this.getBestBallPlayers(matchup)
-      : matchup.starters.map((playerId) => this.allSleeperPlayers.find((p) => p.player_id === playerId)).filter((p): p is SleeperPlayer => !!p);
+      : matchup.starters
+          .map((playerId) => this.allSleeperPlayers.find((p) => p.player_id === playerId))
+          .filter((p): p is SleeperPlayer => !!p);
   }
 
   private getBestBallPlayers(matchup: Matchup) {

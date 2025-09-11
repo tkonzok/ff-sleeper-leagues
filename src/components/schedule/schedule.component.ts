@@ -1,4 +1,4 @@
-import { NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, DestroyRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
@@ -7,10 +7,10 @@ import { ScheduleService } from '../../domain/schedule.service';
 import { TeamLogoMapper } from '../../utils/team-logo-mapper';
 
 @Component({
-    selector: 'app-schedule',
-    imports: [NgForOf, NgClass, NgOptimizedImage, NgIf],
-    templateUrl: './schedule.component.html',
-    styleUrls: ['./schedule.component.css']
+  selector: 'app-schedule',
+  imports: [NgForOf, NgClass, NgIf],
+  templateUrl: './schedule.component.html',
+  styleUrls: ['./schedule.component.css'],
 })
 export class ScheduleComponent implements OnInit {
   protected fullSchedule: Schedule[] = [];

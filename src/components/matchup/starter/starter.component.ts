@@ -4,10 +4,10 @@ import { SleeperPlayer } from '../../../domain/sleeper-player';
 import { TeamLogoMapper } from '../../../utils/team-logo-mapper';
 
 @Component({
-    selector: 'app-starter',
-    imports: [NgIf],
-    templateUrl: './starter.component.html',
-    styleUrl: './starter.component.css'
+  selector: 'app-starter',
+  imports: [NgIf],
+  templateUrl: './starter.component.html',
+  styleUrl: './starter.component.css',
 })
 export class StarterComponent {
   protected teamLogoPaths: Record<string, string> = new TeamLogoMapper().getTeamLogoPaths();
