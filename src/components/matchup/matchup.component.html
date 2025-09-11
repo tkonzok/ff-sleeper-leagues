@@ -18,13 +18,19 @@
   @if (myTeam?.players?.length || opponent?.players?.length) {
     <div class="content">
       <div class="flex column">
-        @for (starter of myTeam?.players; track $index; let index = $index) {
-          @if (starter) {
+        @for (player of myTeam?.players; track $index; let index = $index) {
+          @if (player) {
             <span>
               <app-starter
-                [starter]="starter"
+                [starter]="player"
+                [highlight]="isBestBallStarter(player.playerId, myTeam)"
+                [fade]="
+                  league.settings.bestBall &&
+                  !isBestBallStarter(player.playerId, myTeam) &&
+                  teamsWithShownPoints.includes(player.team)
+                "
                 [points]="
-                  starter.team && teamsWithShownPoints.includes(starter.team) && myTeam?.playersPoints?.length
+                  player.team && teamsWithShownPoints.includes(player.team) && myTeam?.playersPoints?.length
                     ? myTeam!.playersPoints[index].toString()
                     : null
                 "
@@ -34,14 +40,19 @@
         }
       </div>
       <div class="flex column">
-        @for (starter of opponent?.players; track $index; let index = $index) {
-          @if (starter) {
+        @for (player of opponent?.players; track $index; let index = $index) {
+          @if (player) {
             <span class="player">
               <app-starter
-                [starter]="starter"
-                [isOpponent]="true"
+                [starter]="player"
+                [highlight]="isBestBallStarter(player.playerId, opponent)"
+                [fade]="
+                  league.settings.bestBall &&
+                  !isBestBallStarter(player.playerId, opponent) &&
+                  teamsWithShownPoints.includes(player.team)
+                "
                 [points]="
-                  starter.team && teamsWithShownPoints.includes(starter.team) && opponent?.playersPoints?.length
+                  player.team && teamsWithShownPoints.includes(player.team) && opponent?.playersPoints?.length
                     ? opponent!.playersPoints[index].toString()
                     : null
                 "

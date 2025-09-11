@@ -13,12 +13,30 @@ export class StarterComponent {
   private _points: string | null = null;
 
   readonly starter = input.required<SleeperPlayer>();
-  readonly isOpponent = input<boolean>(false);
+  readonly highlight = input<boolean>(false);
+  readonly fade = input<boolean>(false);
+
   @Input() set points(value: string | null) {
     this._points = value;
   }
 
   get points(): string | null {
     return this._points;
+  }
+
+  protected getBorderClass(player: SleeperPlayer | undefined) {
+    if (!this.highlight() || !player || !player.fantasyPositions?.length) return '';
+    switch (true) {
+      case player.fantasyPositions.includes('TE'):
+        return 'border-amber';
+      case player.fantasyPositions.includes('WR'):
+        return 'border-blue';
+      case player.fantasyPositions.includes('RB'):
+        return 'border-green';
+      case player.fantasyPositions.includes('QB'):
+        return 'border-white';
+      default:
+        return '';
+    }
   }
 }

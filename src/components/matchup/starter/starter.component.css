@@ -10,6 +10,22 @@ div {
   font-size: clamp(8px, calc(8px + (18 - 8) * ((100vw - 760px) / (1000 - 760))), 18px);
   line-height: calc(clamp(8px, calc(8px + (18 - 8) * ((100vw - 760px) / (1000 - 760))), 18px) * 1.2);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+  &.border-white {
+    border: 1px solid #fff;
+  }
+
+  &.border-green {
+    border: 1px solid #0a0;
+  }
+
+  &.border-blue {
+    border: 1px solid #06d;
+  }
+
+  &.border-amber {
+    border: 1px solid #fa0;
+  }
 }
 
 img {
@@ -22,6 +38,10 @@ img {
 .points {
   margin-left: auto;
   width: fit-content;
+  color: darkgrey;
+}
+
+.text-grey {
   color: darkgrey;
 }
 

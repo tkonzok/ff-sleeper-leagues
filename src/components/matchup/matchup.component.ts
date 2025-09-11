@@ -70,8 +70,7 @@ export class MatchupComponent implements OnInit {
   set viewedGames(games: Schedule[]) {
     this._viewedGames = games;
     this.updateTeamsWithShownPoints();
-    this.updateBestBallLineups();
-    this.updateTotalPoints();
+    this.loadMatchups();
   }
   get viewedGames(): Schedule[] {
     return this._viewedGames;
@@ -87,6 +86,10 @@ export class MatchupComponent implements OnInit {
         }),
       )
       .subscribe();
+  }
+
+  protected isBestBallStarter(playerId: any, opponent: MatchupRoster | undefined) {
+    return !!opponent?.bestBallLineup?.some((entry) => entry?.player?.playerId === playerId);
   }
 
   private loadMatchups(): void {
@@ -175,6 +178,12 @@ export class MatchupComponent implements OnInit {
         const posA = positionOrder[a.fantasyPositions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
         const posB = positionOrder[b.fantasyPositions.filter((pos) => Object.keys(positionOrder).includes(pos))[0]] ?? 99;
         if (posA !== posB) return posA - posB;
+
+        const teamsOfViewedGames = this.viewedGames.flatMap((game) => [game.homeTeam, game.guestTeam]);
+        const pointsA = teamsOfViewedGames.includes(a.team) ? (matchup.playersPoints[a.playerId] ?? 0) : 0.001;
+        const pointsB = teamsOfViewedGames.includes(b.team) ? (matchup.playersPoints[b.playerId] ?? 0) : 0.001;
+        if (pointsB !== pointsA) return pointsB - pointsA;
+
         const lastNameCmp = a.lastName.localeCompare(b.lastName);
         if (lastNameCmp !== 0) return lastNameCmp;
         return a.firstName.localeCompare(b.firstName);

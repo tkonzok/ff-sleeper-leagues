@@ -1,8 +1,8 @@
-<div>
-  @if (starter()) {
+<div class="{{ getBorderClass(starter()) }}">
+  @if (starter() && starter().team) {
     <img src="assets/logos/{{ teamLogoPaths[starter().team] }}" alt="team logo" height="24px" />
   }
-  <span class="{{ isOpponent() ? 'red' : 'green' }}">{{
+  <span class="{{ fade() || !starter().team ? 'text-grey' : '' }}">{{
     starter() ? starter().firstName + " " + starter().lastName : "--"
   }}</span>
   <span class="points">{{ points }}</span>
