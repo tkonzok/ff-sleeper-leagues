@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject, input } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { Schedule } from '../../domain/schedule';
@@ -44,9 +44,9 @@ export class ScheduleComponent implements OnInit {
     return this._viewedGames;
   }
 
-  @Output() selectGame: EventEmitter<Schedule> = new EventEmitter<Schedule>();
-  @Output() toggleGameViewed: EventEmitter<Schedule> = new EventEmitter<Schedule>();
-  @Output() toggleAllGamesViewed: EventEmitter<Schedule[]> = new EventEmitter<Schedule[]>();
+  readonly selectGame = output<Schedule>();
+  readonly toggleGameViewed = output<Schedule>();
+  readonly toggleAllGamesViewed = output<Schedule[]>();
 
   ngOnInit() {
     this.getSchedule().subscribe(() => {
