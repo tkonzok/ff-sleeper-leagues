@@ -1,5 +1,5 @@
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 import { SleeperPlayer } from '../../../domain/sleeper-player';
 import { TeamLogoMapper } from '../../../utils/team-logo-mapper';
 
@@ -13,8 +13,8 @@ export class StarterComponent {
   protected teamLogoPaths: Record<string, string> = new TeamLogoMapper().getTeamLogoPaths();
   private _points: string | null = null;
 
-  @Input() starter: SleeperPlayer | undefined;
-  @Input() isOpponent: boolean = false;
+  readonly starter = input.required<SleeperPlayer>();
+  readonly isOpponent = input<boolean>(false);
   @Input() set points(value: string | null) {
     this._points = value;
   }

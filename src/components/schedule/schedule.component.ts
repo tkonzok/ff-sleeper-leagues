@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { Schedule } from '../../domain/schedule';
@@ -36,7 +36,7 @@ export class ScheduleComponent implements OnInit {
     return this._week;
   }
 
-  @Input() selectedGame?: Schedule;
+  readonly selectedGame = input<Schedule>();
   @Input() set viewedGames(games: Schedule[]) {
     this._viewedGames = games;
   }

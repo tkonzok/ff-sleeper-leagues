@@ -25,7 +25,6 @@ export class MatchupComponent implements OnInit {
   protected myTotalPoints: string = '';
   protected opponentTotalPoints: string = '';
   protected pointDifferential: string = '';
-  protected initialized = false;
 
   private _league!: League;
   private _rosterId: number | null | undefined;

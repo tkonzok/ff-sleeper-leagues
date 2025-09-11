@@ -12,7 +12,7 @@
                 <img src="assets/icons/hide.png" alt="closed eye icon" />
               }
             </button>
-            <button class="select-game" (click)="onSelectGame(game)" [ngClass]="{ selected: selectedGame === game }">
+            <button class="select-game" (click)="onSelectGame(game)" [ngClass]="{ selected: selectedGame() === game }">
               <img src="assets/logos/{{ teamLogoPaths[game.guestTeam] }}" alt="guest team logo" height="24px" />
               <img src="assets/logos/{{ teamLogoPaths[game.homeTeam] }}" alt="home team logo" height="24px" />
             </button>

@@ -1,7 +1,7 @@
 <div>
-  @if (starter) {
-    <img src="assets/logos/{{ teamLogoPaths[starter.team] }}" alt="team logo" height="24px" />
+  @if (starter()) {
+    <img src="assets/logos/{{ teamLogoPaths[starter().team] }}" alt="team logo" height="24px" />
   }
-  <span class="{{ isOpponent ? 'red' : 'green' }}">{{ starter ? starter.first_name + " " + starter.last_name : "--" }}</span>
+  <span class="{{ isOpponent() ? 'red' : 'green' }}">{{ starter() ? starter().first_name + " " + starter().last_name : "--" }}</span>
   <span class="points">{{ points }}</span>
 </div>

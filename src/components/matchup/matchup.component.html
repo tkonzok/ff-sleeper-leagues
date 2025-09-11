@@ -6,9 +6,7 @@
       </h2>
     </div>
     @if ((myTeam?.starters?.length || opponent?.starters?.length) && teamsWithShownPoints.length) {
-      <div
-        class="flex total-points"
-        >
+      <div class="flex total-points">
         <h2>{{ myTotalPoints }}</h2>
         <h2>{{ opponentTotalPoints }}</h2>
         <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
@@ -21,32 +19,35 @@
     <div class="content">
       <div class="flex column">
         @for (starter of myTeam?.starters; track $index; let index = $index) {
-          <span>
-            <app-starter
-              [starter]="starter"
-              [isOpponent]="false"
-          [points]="
-            starter?.team && teamsWithShownPoints.includes(starter!.team) && myTeam?.players_points?.length
-              ? myTeam!.players_points[index].toString()
-              : null
-          "
-            ></app-starter>
-          </span>
+          @if (starter) {
+            <span>
+              <app-starter
+                [starter]="starter"
+                [points]="
+                  starter.team && teamsWithShownPoints.includes(starter.team) && myTeam?.players_points?.length
+                    ? myTeam!.players_points[index].toString()
+                    : null
+                "
+              ></app-starter>
+            </span>
+          }
         }
       </div>
       <div class="flex column">
         @for (starter of opponent?.starters; track $index; let index = $index) {
+          @if (starter) {
           <span class="player">
             <app-starter
               [starter]="starter"
               [isOpponent]="true"
-          [points]="
-            starter?.team && teamsWithShownPoints.includes(starter!.team) && opponent?.players_points?.length
-              ? opponent!.players_points[index].toString()
-              : null
-          "
+              [points]="
+                starter.team && teamsWithShownPoints.includes(starter.team) && opponent?.players_points?.length
+                  ? opponent!.players_points[index].toString()
+                  : null
+              "
             ></app-starter>
           </span>
+          }
         }
       </div>
     </div>
