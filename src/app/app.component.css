@@ -1,0 +1,105 @@
+button {
+  padding: 8px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #444;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-height: 42px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.update-button {
+  background-color: #ddd;
+  width: fit-content;
+  color: #000;
+}
+
+.container {
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  height: 100vh;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  width: min(880px, 100vw);
+  justify-content: center;
+  margin-bottom: 100px;
+}
+
+.header {
+  grid-column: span 2;
+  width: min(880px, 100vw);
+  padding: 16px;
+  height: 80px;
+}
+
+.week-selector {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.week-selector > button,
+.header > button {
+  padding: 8px;
+  background-color: #ddd;
+}
+
+.week-selector > span {
+  width: 32px;
+  text-align: center;
+  padding: 8px;
+  font-size: clamp(16px, calc(16px + (20 - 16) * ((100vw - 580px) / (1000 - 580))), 20px);
+  color: #fff;
+  font-weight: bold;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.mirrored-hor {
+  transform: scaleX(-1);
+}
+
+.matchup-container,
+.schedule-container {
+  max-height: calc(100vh - 80px);
+  overflow-y: scroll;
+  padding-bottom: 100px;
+}
+
+.schedule-container {
+  padding-left: 4px;
+}
+
+img {
+  width: clamp(20px, calc(20px + (32 - 20) * ((100vw - 500px) / (720 - 500))), 32px);
+  height: clamp(20px, calc(20px + (32 - 20) * ((100vw - 500px) / (720 - 500))), 32px);
+  object-fit: contain;
+  object-position: center;
+}
+
+@media (max-width: 580px) {
+  button {
+    padding: 4px;
+  }
+
+  .matchup-container {
+    padding: 0 0 100px;
+  }
+}
+
+@media (max-width: 440px) {
+  .content {
+    grid-template-columns: 110px 1fr;
+  }
+}
