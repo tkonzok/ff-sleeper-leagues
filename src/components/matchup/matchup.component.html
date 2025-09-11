@@ -21,14 +21,13 @@
         @for (starter of myTeam?.starters; track $index; let index = $index) {
           @if (starter) {
             <span>
-              <app-starter
-                [starter]="starter"
+              <app-starter [starter]="starter"
                 [points]="
                   starter.team && teamsWithShownPoints.includes(starter.team) && myTeam?.players_points?.length
                     ? myTeam!.players_points[index].toString()
                     : null
                 "
-              ></app-starter>
+               />
             </span>
           }
         }
@@ -37,15 +36,14 @@
         @for (starter of opponent?.starters; track $index; let index = $index) {
           @if (starter) {
           <span class="player">
-            <app-starter
-              [starter]="starter"
+            <app-starter [starter]="starter"
               [isOpponent]="true"
               [points]="
                 starter.team && teamsWithShownPoints.includes(starter.team) && opponent?.players_points?.length
                   ? opponent!.players_points[index].toString()
                   : null
               "
-            ></app-starter>
+             />
           </span>
           }
         }
