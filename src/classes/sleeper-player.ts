@@ -1,16 +1,20 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class SleeperPlayer {
-  @Expose({ name: 'player_id' })
+  @Expose()
+  @Transform(({ obj }) => obj.player_id ?? obj.playerId, { toClassOnly: true })
   playerId!: string;
 
-  @Expose({ name: 'first_name' })
+  @Expose()
+  @Transform(({ obj }) => obj.first_name ?? obj.firstName, { toClassOnly: true })
   firstName!: string;
 
-  @Expose({ name: 'last_name' })
+  @Expose()
+  @Transform(({ obj }) => obj.last_name ?? obj.lastName, { toClassOnly: true })
   lastName!: string;
 
-  @Expose({ name: 'fantasy_positions' })
+  @Expose()
+  @Transform(({ obj }) => obj.fantasy_positions ?? obj.fantasyPositions, { toClassOnly: true })
   fantasyPositions!: string[];
 
   @Expose()
@@ -19,6 +23,7 @@ export class SleeperPlayer {
   @Expose()
   team!: string;
 
-  @Expose({ name: 'injury_status' })
+  @Expose()
+  @Transform(({ obj }) => obj.injury_status ?? obj.injuryStatus, { toClassOnly: true })
   injuryStatus!: string;
 }

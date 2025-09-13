@@ -19,7 +19,7 @@ export class SleeperService {
   private http = inject(HttpClient);
   private dbService = inject(NgxIndexedDBService);
 
-  private static readonly SLEEPER_PLAYERS_URL: string = `${environment.apiUrl}/sleeper-players`;
+  private static readonly PLAYERS_URL: string = `${environment.apiUrl}/sleeper-players`;
   private static readonly SLEEPER_API_URL: string = 'https://api.sleeper.app/v1';
   private readonly sleeperPlayers$: ReplaySubject<SleeperPlayer[]> = new ReplaySubject(1);
 
@@ -36,7 +36,7 @@ export class SleeperService {
   }
 
   updateSleeperPlayers() {
-    return this.http.post(SleeperService.SLEEPER_PLAYERS_URL + '/update', {});
+    return this.http.post(SleeperService.PLAYERS_URL + '/update', {});
   }
 
   getLeagues(userId: string) {
@@ -59,7 +59,14 @@ export class SleeperService {
   }
 
   getWeek(): Observable<number> {
-    return this.http.get<NflState>(`${SleeperService.SLEEPER_API_URL}/state/nfl`).pipe(map((state) => state.displayWeek));
+    return this.http.get<NflState>(`${SleeperService.SLEEPER_API_URL}/state/nfl`).pipe(
+      map(
+        (state) =>
+          plainToInstance(NflState, state, {
+            excludeExtraneousValues: true,
+          }).displayWeek,
+      ),
+    );
   }
 
   refreshAll() {
@@ -82,7 +89,7 @@ export class SleeperService {
   }
 
   private loadSleeperPlayersFromApi(): Observable<SleeperPlayer[]> {
-    return this.http.get<SleeperPlayer[]>(SleeperService.SLEEPER_PLAYERS_URL).pipe(
+    return this.http.get<SleeperPlayer[]>(SleeperService.PLAYERS_URL).pipe(
       map((sleeperPlayers: SleeperPlayer[]) =>
         plainToInstance(SleeperPlayer, sleeperPlayers, {
           excludeExtraneousValues: true,

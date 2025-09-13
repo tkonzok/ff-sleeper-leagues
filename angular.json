@@ -61,7 +61,8 @@
               "buildTarget": "ff-sleeper-leagues:build:production"
             },
             "development": {
-              "buildTarget": "ff-sleeper-leagues:build:development"
+              "buildTarget": "ff-sleeper-leagues:build:development",
+              "port": 4201
             }
           },
           "defaultConfiguration": "development"
