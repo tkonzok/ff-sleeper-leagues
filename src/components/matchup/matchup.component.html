@@ -1,66 +1,80 @@
 <div class="container">
-  <div class="league-header">
-    <div>
-      <h2 [ngClass]="{ bestball: league.settings.bestBall }">
-        {{ league.settings.bestBall ? league.name + " (Bestball)" : league.name }}
-      </h2>
-    </div>
-    @if ((myTeam?.players?.length || opponent?.players?.length) && teamsWithShownPoints.length) {
-      <div class="flex total-points">
-        <h2>{{ myTeam!.points }}</h2>
-        <h2>{{ opponent!.points }}</h2>
-        <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
-          ({{ pointDifferential }})
-        </h2>
-      </div>
-    }
-  </div>
-  @if (myTeam?.players?.length || opponent?.players?.length) {
-    <div class="content">
-      <div class="flex column">
-        @for (player of myTeam?.players; track $index; let index = $index) {
-          @if (player) {
-            <span>
-              <app-starter
-                [starter]="player"
-                [highlight]="isBestBallStarter(player.playerId, myTeam)"
-                [fade]="
-                  league.settings.bestBall &&
-                  !isBestBallStarter(player.playerId, myTeam) &&
-                  teamsWithShownPoints.includes(player.team)
-                "
-                [points]="
-                  player.team && teamsWithShownPoints.includes(player.team) && myTeam?.playersPoints?.length
-                    ? myTeam!.playersPoints[index].toString()
-                    : null
-                "
-              />
-            </span>
-          }
-        }
-      </div>
-      <div class="flex column">
-        @for (player of opponent?.players; track $index; let index = $index) {
-          @if (player) {
-            <span class="player">
-              <app-starter
-                [starter]="player"
-                [highlight]="isBestBallStarter(player.playerId, opponent)"
-                [fade]="
-                  league.settings.bestBall &&
-                  !isBestBallStarter(player.playerId, opponent) &&
-                  teamsWithShownPoints.includes(player.team)
-                "
-                [points]="
-                  player.team && teamsWithShownPoints.includes(player.team) && opponent?.playersPoints?.length
-                    ? opponent!.playersPoints[index].toString()
-                    : null
-                "
-              />
-            </span>
+  @if (showScoring()) {
+    <div class="scoring-overlay" (click)="showScoring.set(false)">
+      <div class="scoring-content" (click)="$event.stopPropagation()">
+        @for (scoringSetting of Object.entries(league.scoringSettings); track $index) {
+          @if (scoringSetting[1]) {
+            <div>
+              <p>{{ scoringSetting[0] }}:</p>
+              <p class="score-value">{{ scoringSetting[1] }}</p>
+            </div>
           }
         }
       </div>
     </div>
   }
+    <div class="league-header">
+      <div>
+        <h2 [ngClass]="{ bestball: league.settings.bestBall }" (click)="showScoring.set(true)">
+          {{ league.settings.bestBall ? league.name + " (Bestball)" : league.name }}
+        </h2>
+      </div>
+      @if ((myTeam?.players?.length || opponent?.players?.length) && teamsWithShownPoints.length) {
+        <div class="flex total-points">
+          <h2>{{ myTeam!.points }}</h2>
+          <h2>{{ opponent!.points }}</h2>
+          <h2 [ngClass]="{ red: pointDifferential.startsWith('-'), green: pointDifferential.startsWith('+') }">
+            ({{ pointDifferential }})
+          </h2>
+        </div>
+      }
+    </div>
+    @if (myTeam?.players?.length || opponent?.players?.length) {
+      <div class="content">
+        <div class="flex column">
+          @for (player of myTeam?.players; track $index; let index = $index) {
+            @if (player) {
+              <span>
+                <app-starter
+                  [starter]="player"
+                  [highlight]="isBestBallStarter(player.playerId, myTeam)"
+                  [fade]="
+                    league.settings.bestBall &&
+                    !isBestBallStarter(player.playerId, myTeam) &&
+                    teamsWithShownPoints.includes(player.team)
+                  "
+                  [points]="
+                    player.team && teamsWithShownPoints.includes(player.team) && myTeam?.playersPoints?.length
+                      ? myTeam!.playersPoints[index].toString()
+                      : null
+                  "
+                />
+              </span>
+            }
+          }
+        </div>
+        <div class="flex column">
+          @for (player of opponent?.players; track $index; let index = $index) {
+            @if (player) {
+              <span class="player">
+                <app-starter
+                  [starter]="player"
+                  [highlight]="isBestBallStarter(player.playerId, opponent)"
+                  [fade]="
+                    league.settings.bestBall &&
+                    !isBestBallStarter(player.playerId, opponent) &&
+                    teamsWithShownPoints.includes(player.team)
+                  "
+                  [points]="
+                    player.team && teamsWithShownPoints.includes(player.team) && opponent?.playersPoints?.length
+                      ? opponent!.playersPoints[index].toString()
+                      : null
+                  "
+                />
+              </span>
+            }
+          }
+        </div>
+      </div>
+    }
 </div>

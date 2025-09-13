@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { League } from '../../classes/league';
 import { Matchup } from '../../classes/matchup';
@@ -23,6 +23,8 @@ export class MatchupComponent implements OnInit {
   protected opponent?: MatchupRoster;
   protected teamsWithShownPoints: string[] = [];
   protected pointDifferential: string = '';
+  protected readonly showScoring = signal(false)
+  protected readonly Object = Object;
 
   private _league!: League;
   private _rosterId: number | null | undefined;

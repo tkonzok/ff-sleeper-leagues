@@ -15,6 +15,7 @@ h2 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .content {
@@ -70,4 +71,39 @@ h2 {
 
 .bestball {
   color: darkgray;
+}
+
+.scoring-overlay {
+  position: fixed;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.6); /* diffuse backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* make sure it sits on top */
+}
+
+.scoring-content {
+  background: #222;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  > div {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 100%;
+
+    > * {
+      margin: 4px;
+    }
+
+    > .score-value {
+      font-weight: bold;
+    }
+  }
 }
